@@ -1,12 +1,7 @@
 {# Override of @UXToolkit/markdown/code_preview.html.twig: reuse ux.symfony.com's styled preview
    iframe (spinner + rounded frame). The Toolkit passes `previewUrl`, `height` and `code`. #}
 {% if previewUrl is defined and previewUrl %}
-    <div class="Toolkit_Preview relative group"
-         data-controller="lazy-iframe"
-         data-lazy-iframe-src-value="{{ previewUrl }}"
-    >
-        {{ include('toolkit/docs/_preview.html.twig') }}
-    </div>
+    {{ include('toolkit/docs/_preview.html.twig') }}
 {% else %}
     <pre><code>{{ code }}</code></pre>
 {% endif %}

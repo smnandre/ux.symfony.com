@@ -16,11 +16,21 @@
         {% block sub_content %}
             With Toolkit comes “Kits”, a set of ready-to-use and fully-customizable UI Twig components and more, to help you to build your Design System.
         {% endblock %}
+
+        {% block header_actions %}
+            <a
+                href="#kits"
+                class="bg-body flex border rounded gap-2 py-2 px-4 relative items-center transition-colors"
+            >
+                <twig:ux:icon name="mdi:view-grid-outline" class="Icon size-6" />
+                See the Kits
+            </a>
+        {% endblock %}
     {% endcomponent %}
 {% endblock %}
 
 {% block code_block_left %}
-<twig:Terminal>
+<twig:Terminal bottomPadding="20" class="h-full">
 # Install the components you need...
 php bin/console ux:install card
 php bin/console ux:install button
@@ -44,17 +54,18 @@ tree templates/components
         filename="templates/toolkit/_code_block_right.html.twig"
         :showFilename="false"
         height="auto"
+        class="h-full"
     />
 {% endblock %}
 
-{% block demo_title %}UX Toolkit{% endblock %}
-
-{% block demo_content %}
-    {% apply markdown_to_html %}
-    [toolkit-preview {"kit":"shadcn","height":"400px"}]
-    {{ source ('toolkit/_code_block_right.html.twig') }}
-    [/toolkit-preview]
-    {% endapply %}
+{% block package_demo %}
+    <div id="demo" class="mb-12">
+{% apply markdown_to_html %}
+[toolkit-preview {"kit":"shadcn","height":"300px"}]
+{{ source('toolkit/_code_block_right.html.twig') }}
+[/toolkit-preview]
+{% endapply %}
+    </div>
 {% endblock %}
 
 {% block package_install %}
