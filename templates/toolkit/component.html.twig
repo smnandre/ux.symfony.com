@@ -49,7 +49,8 @@
                                 {% for item in toc_items %}
                                     {% set class = item.level == 3 ? 'ml-2' %}
                                     <li class="rounded transition-colors duration-100 ease-in-out hover:bg-surface {{ class }}">
-                                        <a href="#{{ item.id }}" class="block px-2 py-0.5 text-[.9rem]" data-action="click->disclosure#close">
+                                        <a href="#{{ item.id }}" class="flex items-center gap-1.5 px-2 py-0.5 text-[.9rem]" data-action="click->disclosure#close">
+                                            {% if item.icon is defined %}<twig:ux:icon name="{{ item.icon }}" class="size-3.5 shrink-0" />{% endif %}
                                             {{ item.title|raw }}
                                         </a>
                                     </li>

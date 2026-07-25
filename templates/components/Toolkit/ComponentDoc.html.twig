@@ -25,7 +25,8 @@
                         class="rounded transition-colors duration-100 ease-in-out hover:bg-surface [&.active]:bg-surface {{ class }}"
                         data-toolkit-recipe-toc-target="link"
                     >
-                        <a href="#{{ item.id }}" class="block px-2 py-0.5 text-[.9rem]">
+                        <a href="#{{ item.id }}" class="flex items-center gap-1.5 px-2 py-0.5 text-[.9rem]">
+                            {% if item.icon is defined %}<twig:ux:icon name="{{ item.icon }}" class="size-3.5 shrink-0" />{% endif %}
                             {{ item.title|raw }}
                         </a>
                     </li>

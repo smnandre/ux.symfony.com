@@ -56,27 +56,39 @@ class ToolkitService
     }
 
     /**
-     * @return list<array{level: int, title: string, id: string}>
+     * @return list<array{level: int, title: string, id: string, icon?: string}>
      */
     public function getRecipeTocItems(string $kitId, Recipe $recipe): array
     {
         return array_map(
-            $this->shortenStimulusController(...),
+            $this->decorateApiReferenceItem(...),
             $this->renderRecipe($kitId, $recipe)->tableOfContents,
         );
     }
 
     /**
-     * The API-reference heading for a Stimulus controller reads `data-controller="foo"`, too wide for
-     * the narrow TOC sidebar. Show just the controller name there; the on-page heading is untouched.
+     * The API-reference headings carry a type in their markup: a Stimulus controller reads
+     * `data-controller="foo"` and a Twig component reads `<twig:Foo>`. Tag each with its icon for the
+     * TOC, and shorten the title to just the bare name — the attribute/tag chrome is too wide for the
+     * narrow sidebar; the on-page heading is untouched.
      *
      * @param array{level: int, title: string, id: string} $item
      *
-     * @return array{level: int, title: string, id: string}
+     * @return array{level: int, title: string, id: string, icon?: string}
      */
-    private function shortenStimulusController(array $item): array
+    private function decorateApiReferenceItem(array $item): array
     {
-        $item['title'] = preg_replace('/data-controller=(?:&quot;|")(.*?)(?:&quot;|")/', '$1', $item['title']);
+        if (str_contains($item['title'], 'data-controller=')) {
+            $item['title'] = preg_replace('/data-controller=(?:&quot;|")(.*?)(?:&quot;|")/', '$1', $item['title']);
+            $item['icon'] = 'stimulus';
+
+            return $item;
+        }
+
+        if (str_contains($item['title'], '&lt;twig:') || str_contains($item['title'], '<twig:')) {
+            $item['title'] = preg_replace('/(?:&lt;|<)twig:(.*?)(?:&gt;|>)/', '$1', $item['title']);
+            $item['icon'] = 'twig-components';
+        }
 
         return $item;
     }
