@@ -60,7 +60,25 @@ class ToolkitService
      */
     public function getRecipeTocItems(string $kitId, Recipe $recipe): array
     {
-        return $this->renderRecipe($kitId, $recipe)->tableOfContents;
+        return array_map(
+            $this->shortenStimulusController(...),
+            $this->renderRecipe($kitId, $recipe)->tableOfContents,
+        );
+    }
+
+    /**
+     * The API-reference heading for a Stimulus controller reads `data-controller="foo"`, too wide for
+     * the narrow TOC sidebar. Show just the controller name there; the on-page heading is untouched.
+     *
+     * @param array{level: int, title: string, id: string} $item
+     *
+     * @return array{level: int, title: string, id: string}
+     */
+    private function shortenStimulusController(array $item): array
+    {
+        $item['title'] = preg_replace('/data-controller=(?:&quot;|")(.*?)(?:&quot;|")/', '$1', $item['title']);
+
+        return $item;
     }
 
     /**
