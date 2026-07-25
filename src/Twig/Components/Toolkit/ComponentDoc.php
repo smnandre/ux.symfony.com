@@ -21,7 +21,7 @@ final class ComponentDoc
     public string $kitId;
     public Recipe $component;
 
-    /** @var list<array{level: int, title: string, id: string}> */
+    /** @var list<array{level: int, title: string, id: string, icon?: string}> */
     public array $tocItems = [];
 
     private ?string $htmlContent = null;
