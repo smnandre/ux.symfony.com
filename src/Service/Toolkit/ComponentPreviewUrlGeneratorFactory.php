@@ -46,7 +46,7 @@ final class ComponentPreviewUrlGeneratorFactory
                     [
                         'kitId' => $this->kitId,
                         'code' => $code,
-                        'height' => $options->height,
+                        'height' => '200px',
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL,
                 ));

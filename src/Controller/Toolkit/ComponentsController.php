@@ -63,7 +63,6 @@ class ComponentsController extends AbstractController
         Request $request,
         #[MapQueryParameter] string $kitId,
         #[MapQueryParameter] string $code,
-        #[MapQueryParameter] string $height,
         UriSigner $uriSigner,
         \Twig\Environment $twig,
         #[Autowire(service: 'ux_toolkit.kit.kit_context_runner')]
@@ -114,7 +113,7 @@ class ComponentsController extends AbstractController
                     </script>
                     {{ importmap('toolkit-{$kitId}') }}
                 </head>
-                <body style="min-height: {$height}">{$code}</body>
+                <body style="min-height: 200px">{$code}</body>
             </html>
             HTML);
 

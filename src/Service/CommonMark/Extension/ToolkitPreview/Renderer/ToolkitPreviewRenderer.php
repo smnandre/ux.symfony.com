@@ -34,19 +34,17 @@ final class ToolkitPreviewRenderer implements NodeRendererInterface
         }
 
         $options = $node->getOptions();
-        $height = $options['height'] ?? '200px';
 
         $previewUrl = $this->uriSigner->sign(
             $this->urlGenerator->generate(
                 'app_toolkit_component_preview',
-                ['kitId' => $node->getKitId(), 'code' => $node->getLiteral(), 'height' => $height],
+                ['kitId' => $node->getKitId(), 'code' => $node->getLiteral()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
 
         return $this->twig->render('toolkit/docs/_preview.html.twig', [
             'previewUrl' => $previewUrl,
-            'height' => $height,
         ]);
     }
 }

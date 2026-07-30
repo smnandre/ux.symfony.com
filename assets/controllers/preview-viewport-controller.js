@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
 const MIN_WIDTH = 280;
+const MIN_HEIGHT = 200;
 const ZOOM_STEP = 0.1;
 const ZOOM_MIN = 0.25;
 const ZOOM_MAX = 2;
@@ -15,7 +16,6 @@ export default class extends Controller {
         width: { type: Number, default: 0 },
         zoom: { type: Number, default: 1 },
         grid: Boolean,
-        baseHeight: String,
     };
 
     connect() {
@@ -87,7 +87,7 @@ export default class extends Controller {
                 for (const child of body.children) this.contentObserver.observe(child);
             }
         } catch {
-            // cross-origin: content height stays fixed to the base height
+            // cross-origin: content height stays at the minimum
         }
         this.#render();
     }
@@ -144,25 +144,25 @@ export default class extends Controller {
     }
 
     // Grow the frame to the preview's natural height when the content reflows
-    // taller than the configured base height (e.g. narrowed to mobile), so it
-    // never gets clipped. Measures the content element rather than body
-    // scrollHeight, which the body's flex-centering under-reports. Falls back to
-    // the base height before load or if the document is unreachable (cross-origin).
+    // taller than the minimum (e.g. narrowed to mobile), so it never gets
+    // clipped. Measures the content element rather than body scrollHeight, which
+    // the body's flex-centering under-reports. Never shrinks below MIN_HEIGHT, so
+    // a demo that collapses to nothing (a closeable component being dismissed)
+    // keeps a usable box instead of snapping to 0.
     #contentHeight() {
-        const baseHeight = parseFloat(this.baseHeightValue) || 0;
         try {
             const body = this.frameTarget.contentDocument?.body;
-            if (!body || !body.children.length) return baseHeight;
+            if (!body || !body.children.length) return MIN_HEIGHT;
 
             let content = 0;
             for (const child of body.children) content = Math.max(content, child.offsetHeight);
 
             // Keep the body's own padding (cached at load) visible around the
             // content — the body is border-box, so its padding eats into the
-            // configured height. Never shrink below the configured base height.
-            return Math.max(baseHeight, Math.ceil(content + (this.bodyPadding || 0)));
+            // height. Never shrink below MIN_HEIGHT.
+            return Math.max(MIN_HEIGHT, Math.ceil(content + (this.bodyPadding || 0)));
         } catch {
-            return baseHeight;
+            return MIN_HEIGHT;
         }
     }
 }
