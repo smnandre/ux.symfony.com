@@ -140,7 +140,10 @@ export default class extends Controller {
     }
 
     #availableWidth() {
-        return Math.max(MIN_WIDTH, this.viewportTarget.clientWidth);
+        // clientWidth rounds up ~0.5px, giving a phantom 1px scrollbar on non-overlay
+        // (Windows) scrollbars; floor the real box width. Cap by clientWidth so a
+        // vertical scrollbar (if ever present) stays excluded.
+        return Math.max(MIN_WIDTH, Math.min(this.viewportTarget.clientWidth, Math.floor(this.viewportTarget.getBoundingClientRect().width)));
     }
 
     // Grow the frame to the preview's natural height when the content reflows
