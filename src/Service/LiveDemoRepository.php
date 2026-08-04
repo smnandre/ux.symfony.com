@@ -165,6 +165,40 @@ class LiveDemoRepository
                 longDescription: 'File uploads are tricky. Submit them to a `#[LiveAction]` with the `files` modifier
                 on `data-live-action` then process them.',
             ),
+            new LiveDemo(
+                'pagination',
+                name: 'Smart pagination',
+                description: 'Numbered pagination with instant Live updates and a shareable URL.',
+                author: 'smnandre',
+                publishedAt: '2026-08-04',
+                tags: ['pagination', 'LiveProp', 'LiveAction', 'url'],
+                longDescription: 'The `ComponentWithPaginationTrait` from UX Pagination plugs numbered pagination
+                into any Live component: real links as a non-JavaScript fallback, a `LiveAction` for instant
+                page changes, and a URL that stays shareable, page number in the path included.',
+            ),
+            new LiveDemo(
+                'cursor-pagination',
+                name: 'Cursor pagination',
+                description: 'Signed cursors, stable ordering, ordinary links: no JavaScript at all.',
+                author: 'smnandre',
+                publishedAt: '2026-08-04',
+                tags: ['pagination', 'cursor', 'no-js'],
+                longDescription: 'Cursor pagination resists inserts and deletions: the page boundary is a
+                signed token bound to the query and its order, not an offset. This demo runs on ordinary
+                links and full page loads: watch the `?cursor=` parameter change.',
+            ),
+            new LiveDemo(
+                'pagination-playground',
+                name: 'Pagination playground',
+                description: 'Pick a theme, tweak colors and navigation: the pagination re-renders live.',
+                author: 'smnandre',
+                publishedAt: '2026-08-04',
+                tags: ['pagination', 'theme', 'LiveProp', 'data-model'],
+                longDescription: 'Every control is a writable `LiveProp`: the theme is one argument of
+                `ux_pagination()`, the accent color drives the CSS custom properties of the default theme,
+                and the navigation window is one builder call. The Twig template of the selected theme is
+                shown as-is: no magic, just templates.',
+            ),
         ];
     }
 

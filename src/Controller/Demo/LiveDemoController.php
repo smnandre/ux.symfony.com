@@ -18,10 +18,12 @@ use App\Form\TodoListFormType;
 use App\Repository\FoodRepository;
 use App\Repository\TodoListRepository;
 use App\Service\LiveDemoRepository;
+use App\Service\UxReleaseFeed;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Pagination\PaginatorInterface;
 
 #[Route('/demos/live-component')]
 class LiveDemoController extends AbstractController
@@ -92,12 +94,38 @@ class LiveDemoController extends AbstractController
         ]);
     }
 
+    #[Route('/pagination/{page}', name: 'app_demo_live_component_pagination', requirements: ['page' => '[1-9]\d*'], defaults: ['page' => 1])]
+    public function pagination(LiveDemoRepository $liveDemoRepository, int $page = 1): Response
+    {
+        return $this->render('demos/live_component/pagination.html.twig', [
+            'demo' => $liveDemoRepository->find('pagination'),
+            'page' => $page,
+        ]);
+    }
+
+    #[Route('/cursor-pagination', name: 'app_demo_live_component_cursor_pagination')]
+    public function cursorPagination(LiveDemoRepository $liveDemoRepository, PaginatorInterface $paginator, UxReleaseFeed $releases): Response
+    {
+        $pagination = $paginator
+            ->cursor($releases->all())
+            ->orderBy('id', 'DESC')
+            ->perPage(4)
+            ->context('demo-cursor')
+            ->paginate();
+
+        return $this->render('demos/live_component/cursor_pagination.html.twig', [
+            'demo' => $liveDemoRepository->find('cursor-pagination'),
+            'pagination' => $pagination,
+        ]);
+    }
+
     #[Route('/{demo}', name: 'app_demo_live_component_demo')]
     #[Route('/auto-validating-form', name: 'app_demo_live_component_auto_validating_form')]
     #[Route('/chartjs', name: 'app_demo_live_component_chartjs')]
     #[Route('/dependent-form-fields', name: 'app_demo_live_component_dependent_form_fields')]
     #[Route('/infinite-scroll', name: 'app_demo_live_component_infinite_scroll')]
     #[Route('/infinite-scroll-2', name: 'app_demo_live_component_infinite_scroll_2')]
+    #[Route('/pagination-playground', name: 'app_demo_live_component_pagination_playground')]
     #[Route('/product-form', name: 'app_demo_live_component_product_form')]
     #[Route('/upload', name: 'app_demo_live_component_upload')]
     public function demo(

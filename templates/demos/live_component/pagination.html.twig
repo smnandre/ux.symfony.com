@@ -1,0 +1,41 @@
+{% extends 'demos/live_demo.html.twig' %}
+
+{% block demo_container %}
+
+    <div class="max-w-[1140px] mx-auto mb-12">
+        <twig:Browser class="shadow-blur shadow-blur--rainbow w-full">
+            <twig:EmojiPagination :page="page" paginationRoute="app_demo_live_component_pagination" />
+        </twig:Browser>
+    </div>
+
+    <section class="py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="src/Twig/Components/EmojiPagination.php" reversed sticky>
+The component uses the `ComponentWithPaginationTrait` from UX Pagination and
+declares how to build its pagination. The trait provides the `page` LiveProp,
+the `goToPage`, `nextPage` and `previousPage` LiveActions, and a cached
+`pagination` result.
+
+Here the `page` prop maps into the route path (`/pagination/{page}`) through
+`UrlMapping(mapPath: true)`: change the page, and the URL itself changes.
+
+The `perPage` prop is writable too: pick another page size and the whole
+pagination recomputes, resetting to page 1.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="py-12">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="templates/components/EmojiPagination.html.twig" sticky>
+The template renders the current page items, then calls `ux_pagination()`.
+
+`link_attributes` bridges every generated link to the Live action: the links
+keep their real `href` (they still work without JavaScript, page number in
+the path included), and `data-action="live#action:prevent"` upgrades clicks
+to instant Live updates.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+{% endblock %}

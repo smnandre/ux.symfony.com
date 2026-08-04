@@ -44,6 +44,7 @@
         "symfony/ux-map": "3.x-dev",
         "symfony/ux-native": "3.x-dev",
         "symfony/ux-notify": "3.x-dev",
+        "symfony/ux-pagination": "@dev",
         "symfony/ux-react": "3.x-dev",
         "symfony/ux-toolkit": "3.x-dev",
         "symfony/ux-translator": "3.x-dev",
@@ -149,5 +150,13 @@
             "@php bin/console tailwind:build --minify assets/styles/toolkit-shadcn.css",
             "@php bin/console tailwind:build --minify assets/styles/toolkit-flowbite-4.css"
         ]
-    }
+    },
+    "repositories": [{
+        "name": "ux-pagination",
+        "type": "path",
+        "url": "../ux-pagination/src/Pagination",
+        "options": {
+            "symlink": true
+        }
+    }]
 }

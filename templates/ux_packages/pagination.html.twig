@@ -1,0 +1,165 @@
+{% extends 'ux_packages/package.html.twig' %}
+
+{% block package_header %}
+    {% component PackageHeader with {
+        package: 'pagination',
+        eyebrowText: 'Smart Pagination',
+    } %}
+        {% block title_header %}
+            Paginate anything, <em>pages or cursors</em>
+        {% endblock %}
+
+        {% block sub_content %}
+            Numbered pages, lookahead and signed cursor pagination behind one
+            service. Accessible navigation, ordinary links, zero JavaScript.
+        {% endblock %}
+    {% endcomponent %}
+{% endblock %}
+
+{% block package_content %}
+    <section class="max-w-[1400px] mx-auto px-6 pt-6 md:px-12 md:pt-12">
+        <div class="arrow mb-4 hidden md:block"></div>
+        {% set demo_title = block('demo_title') %}
+        {% set demo_content = block('demo_content') %}
+        <div id="demo" class="mb-12">
+            {% embed 'ux_packages/_package_demo.html.twig' %}
+                {% block title %}{{ demo_title|raw }}{% endblock %}
+                {% block content %}{{ demo_content|raw }}{% endblock %}
+            {% endembed %}
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">One service, three strategies</h2>
+            <div class="grid gap-6 md:grid-cols-3">
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+                    <h3 class="font-semibold mb-1">Numbered</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Page numbers and an exact total. The default.</p>
+                    {% set strategy_numbered %}$paginator->paginate($query);{% endset %}
+                    <twig:CodeBlockInline :code="strategy_numbered" language="php" />
+                </div>
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+                    <h3 class="font-semibold mb-1">Lookahead</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Previous and next without a COUNT query.</p>
+                    {% set strategy_lookahead %}$paginator->query($query)
+    ->lookahead()
+    ->paginate();{% endset %}
+                    <twig:CodeBlockInline :code="strategy_lookahead" language="php" />
+                </div>
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+                    <h3 class="font-semibold mb-1">Cursor</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Stable feeds on living data, signed cursors.</p>
+                    {% set strategy_cursor %}$paginator->cursor($query)
+    ->orderBy(['createdAt', 'id'], 'DESC')
+    ->paginate();{% endset %}
+                    <twig:CodeBlockInline :code="strategy_cursor" language="php" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-2">Pagination that doesn't lose its place</h2>
+            <p class="mb-6 text-gray-600 dark:text-gray-400">
+                Offset pagination drifts when rows are inserted or deleted while
+                your users browse. Cursor pagination does not: the boundary is a
+                signed token, not a position. See it happen:
+            </p>
+            <div class="rounded-lg border border-gray-200 dark:border-gray-700">
+                <twig:PaginationChaos />
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-2">Own the look</h2>
+            <p class="mb-6 text-gray-600 dark:text-gray-400">
+                One pagination result, three templates. Ship the neutral default
+                (styled entirely through <code>--ux-pagination-*</code> CSS
+                variables), use the Tailwind or Bootstrap themes, or write your
+                own in about twenty-five lines: a theme is just a Twig template.
+            </p>
+            <div class="flex flex-col gap-4">
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5 overflow-x-auto">
+                    <p class="eyebrows mb-3">Default theme</p>
+                    {{ ux_pagination(themes, show_info: false) }}
+                </div>
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5 overflow-x-auto">
+                    <p class="eyebrows mb-3">Tailwind theme</p>
+                    {{ ux_pagination(themes, theme: '@UXPagination/theme/tailwind.html.twig', show_info: false) }}
+                </div>
+                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-5 overflow-x-auto">
+                    <p class="eyebrows mb-3">Your own theme (the dot pager from the playground)</p>
+                    {{ ux_pagination(themes, theme: 'demos/live_component/pagination_playground/_dots.html.twig', show_info: false) }}
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                Click any page: the three navigations share one result. Tweak
+                themes and colors live in the
+                <a class="underline" href="{{ path('app_demo_live_component_pagination_playground') }}">pagination playground</a>.
+            </p>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-2">Configure once, autowire by name</h2>
+            <p class="mb-6 text-gray-600 dark:text-gray-400">
+                Application-wide defaults live in one place, and named paginator
+                profiles carry their own page size, parameter names and
+                navigation window. Each profile is autowirable by name.
+            </p>
+            <div class="grid gap-6 md:grid-cols-2">
+                <div>
+                    {% set config_yaml %}# config/packages/ux_pagination.yaml
+ux_pagination:
+    items_per_page: 20
+    page_parameter: page
+    navigation: { mode: sliding, size: 5 }
+    theme: '@UXPagination/theme/tailwind.html.twig'
+    paginators:
+        blog:
+            items_per_page: 12
+            navigation: { size: 7 }{% endset %}
+                    <twig:CodeBlockInline :code="config_yaml" language="yaml" />
+                </div>
+                <div>
+                    {% set config_php %}public function __construct(
+    #[Target('blog')]
+    private PaginatorInterface $paginator,
+) {
+}
+
+// or simply by argument name:
+public function list(PaginatorInterface $blogPaginator) { /* ... */ }{% endset %}
+                    <twig:CodeBlockInline :code="config_php" language="php" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Three demos to explore</h2>
+            <div class="grid gap-6 md:grid-cols-3">
+                {% for live_demo in demos %}
+                    <twig:Demo:DemoCard demo="{{ live_demo }}" />
+                {% endfor %}
+            </div>
+        </div>
+
+        {{ block('package_code_blocks') }}
+    </section>
+{% endblock %}
+
+{% block code_block_left %}
+    <twig:CodeBlock filename="src/Twig/Components/EmojiPagination.php" />
+{% endblock %}
+
+{% block code_block_right %}
+    <twig:CodeBlock filename="templates/components/EmojiPagination.html.twig" />
+{% endblock %}
+
+{% block demo_title %}UX Pagination{% endblock %}
+
+{% block demo_content %}
+    <twig:EmojiPagination paginationRoute="app_pagination" />
+
+    <p class="mt-6 text-sm">
+        Full walkthrough of this component:
+        <a class="underline" href="{{ path('app_demo_live_component_pagination') }}">see the Live demo</a>.
+    </p>
+{% endblock %}

@@ -1,0 +1,26 @@
+{# A complete application-owned pagination theme: a compact dot pager. #}
+{% if pagination.hasPrevious() or pagination.hasNext() %}
+    <nav aria-label="Pagination" class="flex flex-wrap items-center gap-2">
+        {% if pagination.hasPrevious() %}
+            <a href="{{ pagination.previousUrl }}" rel="prev" aria-label="Previous page"
+               class="size-8 grid place-items-center rounded-full hover:bg-violet-100 dark:hover:bg-violet-950">&larr;</a>
+        {% endif %}
+
+        {% for link in pagination.pages %}
+            {% if link.isGap %}
+                <span aria-hidden="true" class="px-1 text-gray-400">&hellip;</span>
+            {% elseif link.isCurrent %}
+                <span aria-current="page"
+                      class="size-8 grid place-items-center rounded-full bg-violet-600 text-white text-sm font-semibold">{{ link.page }}</span>
+            {% else %}
+                <a href="{{ link.url }}" aria-label="Go to page {{ link.page }}"
+                   class="size-8 grid place-items-center rounded-full text-sm hover:bg-violet-100 dark:hover:bg-violet-950">{{ link.page }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagination.hasNext() %}
+            <a href="{{ pagination.nextUrl }}" rel="next" aria-label="Next page"
+               class="size-8 grid place-items-center rounded-full hover:bg-violet-100 dark:hover:bg-violet-950">&rarr;</a>
+        {% endif %}
+    </nav>
+{% endif %}

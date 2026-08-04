@@ -1,6 +1,8 @@
 @import "tailwindcss";
+@import "../../vendor/symfony/ux-pagination/assets/dist/style.min.css";
 
 @source "../../templates/**/*.html.twig";
+@source "../../vendor/symfony/ux-pagination/templates/**/*.html.twig";
 @source "../controllers/**/*.js";
 @source "../react/src/**/*.jsx";
 @source "../vue/src/**/*.js";

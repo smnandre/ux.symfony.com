@@ -1,0 +1,64 @@
+<div{{ attributes }} class="p-6">
+    <div class="flex flex-wrap items-center gap-3 mb-6">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mr-auto">
+            You just read page 1 and stand on page 2. Now change the data:
+        </p>
+        <button
+            type="button"
+            data-action="live#action"
+            data-live-action-param="insertRow"
+            class="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
+        >Insert a row</button>
+        <button
+            type="button"
+            data-action="live#action"
+            data-live-action-param="deleteRow"
+            class="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-1.5 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
+        >Delete a row</button>
+        <button
+            type="button"
+            data-action="live#action"
+            data-live-action-param="reset"
+            class="px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:underline"
+        >Reset</button>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 transition-opacity" data-loading="addClass(opacity-40)">
+        <section class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+            <h3 class="font-semibold mb-1">Offset, page 2</h3>
+            <p class="text-xs font-mono text-gray-500 dark:text-gray-400 mb-4">OFFSET 5 LIMIT 5</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for id in this.offsetPage %}
+                    <span class="font-mono text-sm px-2.5 py-1 rounded border {{ id in this.duplicates
+                        ? 'border-red-400 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
+                        : 'border-gray-300 dark:border-gray-600' }}">#{{ id }}</span>
+                {% endfor %}
+            </div>
+            {% if this.duplicates|length > 0 or this.skipped|length > 0 %}
+                <p class="text-sm text-red-600 dark:text-red-400">
+                    {% if this.duplicates|length > 0 %}
+                        {{ this.duplicates|length }} row{{ this.duplicates|length > 1 ? 's' }} you already read on page 1.
+                    {% endif %}
+                    {% if this.skipped|length > 0 %}
+                        Row #{{ this.skipped|join(', #') }} slipped back to page 1: walking forward, you will never see it.
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">Looks fine... until the data moves.</p>
+            {% endif %}
+        </section>
+
+        <section class="rounded-lg border border-gray-200 dark:border-gray-700 p-5">
+            <h3 class="font-semibold mb-1">Cursor, page 2</h3>
+            <p class="text-xs font-mono text-gray-500 dark:text-gray-400 mb-4">after the signed boundary</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for id in this.cursorPage %}
+                    <span class="font-mono text-sm px-2.5 py-1 rounded border border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-800 dark:bg-violet-950 dark:text-violet-300">#{{ id }}</span>
+                {% endfor %}
+            </div>
+            <p class="text-sm text-emerald-600 dark:text-emerald-400">
+                Exactly the rows after your cursor. No duplicates, no gaps.
+            </p>
+        </section>
+    </div>
+</div>

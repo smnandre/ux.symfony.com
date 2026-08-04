@@ -1,0 +1,39 @@
+{% extends 'demos/live_demo.html.twig' %}
+
+{% block demo_container %}
+
+    <div class="max-w-[1140px] mx-auto mb-12">
+        <twig:Browser class="shadow-blur shadow-blur--rainbow w-full">
+            <twig:PaginationPlayground />
+        </twig:Browser>
+    </div>
+
+    <section class="py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="src/Twig/Components/PaginationPlayground.php" reversed sticky>
+Every control of the playground is a writable `LiveProp`. Nothing here is
+specific to theming: the theme is one argument of `ux_pagination()`, resolved
+against a whitelist of templates, and the navigation window is one call on
+the builder in `createPagination()`.
+
+The accent color only touches CSS custom properties: the default theme is
+styled entirely through `--ux-pagination-*` variables.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="py-12">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="templates/components/PaginationPlayground.html.twig" sticky>
+Each form control binds its `LiveProp` with `data-model`, and the component
+re-renders on change: new theme, new colors, new navigation window.
+
+The pagination links themselves go through `link_attributes`, so paging
+stays instant too. And the template of the selected theme is displayed
+below the result, unmodified: what you see is what you would copy into
+your app.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+{% endblock %}

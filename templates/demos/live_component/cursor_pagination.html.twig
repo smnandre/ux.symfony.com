@@ -1,0 +1,38 @@
+{% extends 'demos/live_demo.html.twig' %}
+
+{% block demo_container %}
+
+    <div class="max-w-[1140px] mx-auto mb-12">
+        <twig:Browser class="shadow-blur shadow-blur--rainbow w-full">
+            <div class="p-6">
+                <ul class="flex flex-col gap-2 mb-6 min-h-56 content-start">
+                    {% for release in pagination %}
+                        <li class="flex flex-wrap items-baseline gap-x-4 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3">
+                            <span class="font-mono text-xs text-violet-700 dark:text-violet-400">v3.{{ release.id }}</span>
+                            <span class="font-medium">{{ release.name }}</span>
+                            <span class="ml-auto text-sm text-gray-500 dark:text-gray-400">{{ release.summary }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                {{ ux_pagination(pagination, theme: '@UXPagination/theme/tailwind.html.twig') }}
+            </div>
+        </twig:Browser>
+    </div>
+
+    <section class="py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="src/Controller/Demo/LiveDemoController.php#L106-L121" reversed sticky>
+No component, no controller JavaScript, no Live anything: the paginator
+reads and validates `?cursor=` from the request, and every link is an
+ordinary link.
+
+The cursor token is signed and bound to the query and its order. Tamper
+with it and you get a clean 400. Rows inserted or deleted between two
+pages never shift the boundary: this is what makes cursor pagination
+stable on living data.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+{% endblock %}

@@ -265,6 +265,18 @@ class UxPackageRepository
             ),
 
             new UxPackage(
+                'pagination',
+                'Pagination',
+                'app_pagination',
+                '#6D28D9',
+                'linear-gradient(95deg, #4C1D95 -5%, #7C3AED 105%)',
+                'Paginate anything, the smart way',
+                'Numbered pages and signed cursor pagination behind one service, with accessible navigation and zero JavaScript.',
+                'I need to paginate my results.',
+                imageFileName: 'pagination.svg',
+            ),
+
+            new UxPackage(
                 'toggle-password',
                 'Toggle Password',
                 'app_toggle_password',
