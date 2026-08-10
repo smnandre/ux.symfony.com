@@ -8536,12 +8536,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ux-twig-component.git",
-                "reference": "a9b93b10fe2056a6f93ebc1f9e3509f7fafb5bf2"
+                "reference": "bc75cbadc8956377fbff78436681c51ae2d80892"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/a9b93b10fe2056a6f93ebc1f9e3509f7fafb5bf2",
-                "reference": "a9b93b10fe2056a6f93ebc1f9e3509f7fafb5bf2",
+                "url": "https://api.github.com/repos/symfony/ux-twig-component/zipball/bc75cbadc8956377fbff78436681c51ae2d80892",
+                "reference": "bc75cbadc8956377fbff78436681c51ae2d80892",
                 "shasum": ""
             },
             "require": {
@@ -8618,7 +8618,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-11T20:32:06+00:00"
+            "time": "2026-08-09T19:04:00+00:00"
         },
         {
             "name": "symfony/ux-vue",
