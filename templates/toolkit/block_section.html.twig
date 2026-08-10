@@ -1,0 +1,45 @@
+{% extends 'toolkit/kit_page.html.twig' %}
+
+{% set title = section.name ~ ' - Blocks - ' ~ kit.manifest.name ~ ' Kit' %}
+{% set description = "The #{section.name} blocks from the UX Toolkit #{kit.manifest.name} kit." %}
+{% set meta = {
+    title: title,
+    description: description,
+    canonical: url('app_icons'),
+    social: {
+        title: title,
+        description: description,
+        image: {
+            url: absolute_url(asset(package.getSocialImage('1200x675'))),
+            type: 'image/png',
+            width: 1200,
+            height: 675,
+            alt: package.humanName ~ ' - Kit ' ~ kit.manifest.name,
+        },
+    },
+} %}
+
+{% block kit_main %}
+    {{ include('toolkit/_kit_breadcrumb.html.twig', {trail: [
+        {label: kit.manifest.name, href: path('app_toolkit_kit', {kitId: kit_id})},
+        {label: 'Blocks', href: path('app_toolkit_kit_blocks', {kitId: kit_id})},
+        {label: section.name},
+    ]}) }}
+
+    <div class="Wysiwyg">
+        <h1>{{ section.name }}</h1>
+    </div>
+
+    <div class="mt-8 space-y-12">
+        {% for variant in variants %}
+            <section id="{{ variant.recipe.name }}" class="scroll-mt-24">
+                <div class="Wysiwyg mb-4">
+                    <h2>
+                        <a href="#{{ variant.recipe.name }}" class="no-underline hover:underline">{{ variant.recipe.name }}</a>
+                    </h2>
+                </div>
+                {{ include('toolkit/_block_preview.html.twig', {variant: variant, kit_id: kit_id, show_install: true}) }}
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

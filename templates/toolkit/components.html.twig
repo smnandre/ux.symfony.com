@@ -1,0 +1,42 @@
+{% extends 'toolkit/kit_page.html.twig' %}
+
+{% set title = 'Components - ' ~ kit.manifest.name ~ ' Kit' %}
+{% set description = "All components from the UX Toolkit #{kit.manifest.name} kit." %}
+{% set meta = {
+    title: title,
+    description: description,
+    canonical: url('app_icons'),
+    social: {
+        title: title,
+        description: description,
+        image: {
+            url: absolute_url(asset(package.getSocialImage('1200x675'))),
+            type: 'image/png',
+            width: 1200,
+            height: 675,
+            alt: package.humanName ~ ' - Kit ' ~ kit.manifest.name,
+        },
+    },
+} %}
+
+{% block kit_main %}
+    {{ include('toolkit/_kit_breadcrumb.html.twig', {trail: [
+        {label: kit.manifest.name, href: path('app_toolkit_kit', {kitId: kit_id})},
+        {label: 'Components'},
+    ]}) }}
+
+    <div class="Wysiwyg">
+        <h1>Components</h1>
+        <p>The building blocks of the {{ kit.manifest.name }} kit.</p>
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {% for component in components %}
+            {{ include('toolkit/_kit_card.html.twig', {
+                href: path('app_toolkit_component', {kitId: kit_id, componentName: component.name}),
+                title: component.manifest.name,
+                description: component.description,
+            }) }}
+        {% endfor %}
+    </div>
+{% endblock %}

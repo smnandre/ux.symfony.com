@@ -1,0 +1,58 @@
+{% extends 'toolkit/kit_page.html.twig' %}
+
+{% set title = 'Blocks - ' ~ kit.manifest.name ~ ' Kit' %}
+{% set description = "Ready-to-use blocks from the UX Toolkit #{kit.manifest.name} kit." %}
+{% set meta = {
+    title: title,
+    description: description,
+    canonical: url('app_icons'),
+    social: {
+        title: title,
+        description: description,
+        image: {
+            url: absolute_url(asset(package.getSocialImage('1200x675'))),
+            type: 'image/png',
+            width: 1200,
+            height: 675,
+            alt: package.humanName ~ ' - Kit ' ~ kit.manifest.name,
+        },
+    },
+} %}
+
+{% block kit_main %}
+    {{ include('toolkit/_kit_breadcrumb.html.twig', {trail: [
+        {label: kit.manifest.name, href: path('app_toolkit_kit', {kitId: kit_id})},
+        {label: 'Blocks'},
+    ]}) }}
+
+    <div class="Wysiwyg">
+        <h1>Blocks</h1>
+        <p>Ready-to-use, copy-paste page sections built from the kit's components.</p>
+    </div>
+
+    <div class="mt-8 space-y-8">
+        {% for section in sections %}
+            <section>
+                <div class="Wysiwyg mb-3">
+                    <h2>
+                        <a href="{{ path('app_toolkit_block_section', {kitId: kit_id, section: section.slug}) }}"
+                           class="no-underline hover:underline">{{ section.name }}</a>
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {% for recipe in section.recipes %}
+                        {{ include('toolkit/_kit_card.html.twig', {
+                            href: path('app_toolkit_block_section', {kitId: kit_id, section: section.slug}) ~ '#' ~ recipe.name,
+                            title: recipe.name,
+                            description: recipe.description,
+                        }) }}
+                    {% endfor %}
+                </div>
+            </section>
+        {% else %}
+            <div class="Wysiwyg">
+                <p>This kit has no blocks yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
