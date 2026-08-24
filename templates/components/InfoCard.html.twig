@@ -1,0 +1,93 @@
+{# @prop id string Unique identifier used by the native popover invoker and close button #}
+{# @prop title string|null Optional title for the card #}
+{# @prop number int|string|null Optional reference number displayed on the invoker #}
+{# @prop target string|null Optional CSS selector connected to the invoker #}
+{# @prop buttonLabel string|null Optional accessible label for the invoker #}
+{# @prop mode string Native popover mode: `auto` or `manual`. Defaults to `auto` #}
+{# @prop showCloseButton boolean Whether to show the native close button. Defaults to `true` #}
+{# @block content Main explanatory content #}
+{# @block media Optional code, image, video, or other illustrative content #}
+{# @block legend Optional legend rendered directly below the media #}
+{%- props id, title = null, number = null, target = null, buttonLabel = null, mode = 'auto', showCloseButton = true -%}
+{%- set _title_id = id ~ '-title' -%}
+{%- set _button_label = buttonLabel ?? (title ? 'Open note ' ~ number ~ ': ' ~ title : 'Open note ' ~ number) -%}
+
+<div
+    {{ attributes.defaults({
+        class: 'InfoCard' ~ (number is not null ? ' InfoCard--pinned' : ''),
+        'data-controller': number is not null and target ? 'info-card' : false,
+        'data-info-card-target-selector-value': target ?: false,
+    }) }}
+>
+    {% if number is not null %}
+        <button
+            type="button"
+            class="InfoCard_button"
+            style="anchor-name: --{{ id }}"
+            popovertarget="{{ id }}"
+            aria-label="{{ _button_label }}"
+            data-info-card-target="trigger"
+            data-action="pointerenter->info-card#draw focus->info-card#draw"
+        >
+            <twig:ux:icon name="lucide:lightbulb" />
+            <span>{{ number }}</span>
+        </button>
+
+        {% if target %}
+            <svg class="InfoCard_connector" aria-hidden="true" focusable="false" data-info-card-target="connector">
+                <line data-info-card-target="line" vector-effect="non-scaling-stroke" />
+                <circle r="3" data-info-card-target="endpoint" />
+            </svg>
+        {% endif %}
+    {% endif %}
+
+    <aside
+        id="{{ id }}"
+        class="InfoCard_card"
+        style="position-anchor: --{{ id }}"
+        popover="{{ mode }}"
+        {% if title %}aria-labelledby="{{ _title_id }}"{% endif %}
+    >
+        {% if title or showCloseButton %}
+            <header class="InfoCard_header">
+                {% if title %}
+                    <h2 id="{{ _title_id }}" class="InfoCard_title">{{ title }}</h2>
+                {% endif %}
+
+                {% if showCloseButton %}
+                    <button
+                        type="button"
+                        class="InfoCard_close"
+                        popovertarget="{{ id }}"
+                        popovertargetaction="hide"
+                        aria-label="Close"
+                    >
+                        <twig:ux:icon name="lucide:x" />
+                    </button>
+                {% endif %}
+            </header>
+        {% endif %}
+
+        <div class="InfoCard_body">
+            {% if block('content') is defined %}
+                <div class="InfoCard_content">
+                    {{ block('content') }}
+                </div>
+            {% endif %}
+
+            {% if block('media') is defined %}
+                <figure class="InfoCard_figure">
+                    <div class="InfoCard_media">
+                        {{ block('media') }}
+                    </div>
+
+                    {% if block('legend') is defined %}
+                        <figcaption class="InfoCard_legend">
+                            {{ block('legend') }}
+                        </figcaption>
+                    {% endif %}
+                </figure>
+            {% endif %}
+        </div>
+    </aside>
+</div>

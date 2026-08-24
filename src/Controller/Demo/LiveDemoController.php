@@ -17,6 +17,7 @@ use App\Entity\TodoList;
 use App\Form\TodoListFormType;
 use App\Repository\FoodRepository;
 use App\Repository\TodoListRepository;
+use App\Service\CursorPayloadPreview;
 use App\Service\LiveDemoRepository;
 use App\Service\UxReleaseFeed;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -94,9 +95,16 @@ class LiveDemoController extends AbstractController
         ]);
     }
 
-    #[Route('/pagination/{page}', name: 'app_demo_live_component_pagination', requirements: ['page' => '[1-9]\d*'], defaults: ['page' => 1])]
-    public function pagination(LiveDemoRepository $liveDemoRepository, int $page = 1): Response
-    {
+    #[Route(
+        '/pagination/{page}',
+        name: 'app_demo_live_component_pagination',
+        requirements: ['page' => '[1-9]\d*'],
+        defaults: ['page' => 1],
+    )]
+    public function pagination(
+        LiveDemoRepository $liveDemoRepository,
+        int $page = 1,
+    ): Response {
         return $this->render('demos/live_component/pagination.html.twig', [
             'demo' => $liveDemoRepository->find('pagination'),
             'page' => $page,
@@ -104,18 +112,27 @@ class LiveDemoController extends AbstractController
     }
 
     #[Route('/cursor-pagination', name: 'app_demo_live_component_cursor_pagination')]
-    public function cursorPagination(LiveDemoRepository $liveDemoRepository, PaginatorInterface $paginator, UxReleaseFeed $releases): Response
-    {
+    public function cursorPagination(
+        Request $request,
+        CursorPayloadPreview $cursorPayloadPreview,
+        LiveDemoRepository $liveDemoRepository,
+        PaginatorInterface $paginator,
+        UxReleaseFeed $releases,
+    ): Response {
+        $withNewRelease = $request->query->getBoolean('published');
         $pagination = $paginator
-            ->cursor($releases->all())
+            ->cursor($releases->all($withNewRelease))
             ->orderBy('id', 'DESC')
             ->perPage(4)
             ->context('demo-cursor')
+            ->queryParameters(array_filter(['published' => $withNewRelease ? 1 : null]))
             ->paginate();
 
         return $this->render('demos/live_component/cursor_pagination.html.twig', [
             'demo' => $liveDemoRepository->find('cursor-pagination'),
             'pagination' => $pagination,
+            'cursorPayload' => $cursorPayloadPreview->decode($pagination->getCursor()),
+            'withNewRelease' => $withNewRelease,
         ]);
     }
 
@@ -125,7 +142,7 @@ class LiveDemoController extends AbstractController
     #[Route('/dependent-form-fields', name: 'app_demo_live_component_dependent_form_fields')]
     #[Route('/infinite-scroll', name: 'app_demo_live_component_infinite_scroll')]
     #[Route('/infinite-scroll-2', name: 'app_demo_live_component_infinite_scroll_2')]
-    #[Route('/pagination-playground', name: 'app_demo_live_component_pagination_playground')]
+    #[Route('/pagination-studio', name: 'app_demo_live_component_pagination_studio')]
     #[Route('/product-form', name: 'app_demo_live_component_product_form')]
     #[Route('/upload', name: 'app_demo_live_component_upload')]
     public function demo(

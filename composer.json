@@ -44,7 +44,7 @@
         "symfony/ux-map": "3.x-dev",
         "symfony/ux-native": "3.x-dev",
         "symfony/ux-notify": "3.x-dev",
-        "symfony/ux-pagination": "@dev",
+        "symfony/ux-pagination": "3.x-dev",
         "symfony/ux-react": "3.x-dev",
         "symfony/ux-toolkit": "3.x-dev",
         "symfony/ux-translator": "3.x-dev",
@@ -62,7 +62,7 @@
         "twig/intl-extra": "^3.24",
         "twig/markdown-extra": "^3.24",
         "twig/string-extra": "^3.24",
-        "twig/twig": "^3.27.1"
+        "twig/twig": "^3.28.0"
     },
     "require-dev": {
         "kocal/phpstan-symfony-ux": "^1.1",

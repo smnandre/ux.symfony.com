@@ -1,0 +1,195 @@
+.browser {
+    --browser-chrome: var(--n-800);
+    --browser-url: var(--n-900);
+    --browser-border: color-mix(in oklch, var(--color-body-text) 20%, transparent);
+    --browser-loading: oklch(72% .22 350);
+
+    place-self: center;
+    margin-inline: auto;
+
+    .browser_shell {
+        overflow: hidden;
+        border: .5px solid var(--browser-border);
+        border-radius: .75rem;
+    }
+
+    .browser_header {
+        position: relative;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr minmax(12rem, 3fr) 1fr;
+        align-items: center;
+        padding: .4rem .625rem;
+        background: var(--browser-chrome);
+        box-shadow: 0 .5rem 1rem -.65rem rgb(0 0 0 / 90%);
+
+        &::after {
+            position: absolute;
+            inset-inline: 0;
+            inset-block-end: 0;
+            block-size: 1px;
+            content: '';
+            opacity: 0;
+            background: var(--browser-loading);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: opacity 160ms ease-out;
+        }
+    }
+
+    .browser_controls {
+        display: flex;
+        gap: .5rem;
+        padding-inline: .5rem;
+
+        span {
+            inline-size: .75rem;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgb(0 0 0 / 15%);
+
+            &:nth-child(1) {
+                background: #ff5c60;
+            }
+
+            &:nth-child(2) {
+                background: #f2ca44;
+            }
+
+            &:nth-child(3) {
+                background: #65c466;
+            }
+        }
+    }
+
+    .browser_url {
+        display: grid;
+        min-inline-size: 0;
+        grid-template-columns: 1rem minmax(0, 1fr) 1rem;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem .5625rem;
+        color: var(--n-100);
+        border-radius: .25rem;
+        background: var(--browser-url);
+        line-height: 1;
+    }
+
+    .browser_url-icon {
+        display: grid;
+        opacity: .9;
+        place-items: center;
+
+        svg {
+            inline-size: .875rem;
+            block-size: .875rem;
+        }
+    }
+
+    .browser_url-value {
+        display: flex;
+        overflow: hidden;
+        align-items: baseline;
+        justify-content: center;
+        font-size: .75rem;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .browser_url-origin,
+    .browser_url-path,
+    .browser_url-query {
+        --browser-url-part-color: var(--n-100);
+
+        overflow: hidden;
+        color: var(--browser-url-part-color);
+        text-overflow: ellipsis;
+
+        &[hidden] {
+            display: none;
+        }
+
+        &[data-browser-url-changed] {
+            animation: browser-url-changed 600ms ease-out;
+        }
+    }
+
+    .browser_url-origin,
+    .browser_url-query {
+        --browser-url-part-color: color-mix(in oklch, var(--n-100) 58%, transparent);
+    }
+
+    .browser_viewport {
+        position: relative;
+        z-index: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        inline-size: 100%;
+        aspect-ratio: 2 / 3;
+        background: var(--color-body-bg);
+        scrollbar-width: thin;
+    }
+
+    &[data-browser-loading] .browser_header::after,
+    &:has(.browser_viewport :is([aria-busy='true'], [data-live-is-loading])) .browser_header::after {
+        opacity: 1;
+        animation: browser-loading 700ms ease-out both;
+    }
+}
+
+@media (min-width: 576px) {
+    .browser .browser_viewport {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+@media (max-width: 479px) {
+    .browser {
+        .browser_header {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .browser_controls,
+        .browser_actions {
+            display: none;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    @keyframes browser-loading {
+        0% {
+            transform: scaleX(0);
+        }
+
+        100% {
+            transform: scaleX(1);
+        }
+    }
+
+    @keyframes browser-url-changed {
+        from {
+            color: var(--browser-loading);
+        }
+
+        to {
+            color: var(--browser-url-part-color);
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .browser {
+        &[data-browser-loading] .browser_header::after {
+            opacity: 1;
+            transform: none;
+        }
+
+        .browser_url-origin[data-browser-url-changed],
+        .browser_url-path[data-browser-url-changed],
+        .browser_url-query[data-browser-url-changed] {
+            color: var(--browser-loading);
+        }
+    }
+}

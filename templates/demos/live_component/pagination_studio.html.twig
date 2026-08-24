@@ -1,0 +1,36 @@
+{% extends 'demos/live_demo.html.twig' %}
+
+{% block demo_container %}
+
+    <div class="PaginationDemoShell max-w-[1280px] mx-auto mb-12">
+        <twig:Browser
+            class="PaginationDemoBrowser PaginationStudioBrowser shadow-blur shadow-blur--rainbow w-full"
+            syncUrl
+            :showOrigin="false"
+        >
+            <twig:PaginationStudio />
+        </twig:Browser>
+    </div>
+
+    <section class="py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Twig/Components/PaginationStudio.php"
+                :lineStart="78"
+                :lineEnd="99"
+                reversed
+                sticky
+            >
+## One result contract, three strategies
+
+The Studio renders real `PaginationInterface` results. Numbered pagination
+offers totals and page links, lookahead skips the count, and cursor pagination
+uses a signed boundary.
+
+The generated YAML only contains reusable defaults. The selected strategy stays
+an explicit PHP decision, where the data source and ordering are visible.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+{% endblock %}

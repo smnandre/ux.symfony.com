@@ -167,37 +167,34 @@ class LiveDemoRepository
             ),
             new LiveDemo(
                 'pagination',
-                name: 'Smart pagination',
-                description: 'Numbered pagination with instant Live updates and a shareable URL.',
+                name: 'Live Pagination',
+                description: 'Filter the jerseys, follow a page link, then refresh: every live state has a real URL.',
                 author: 'smnandre',
                 publishedAt: '2026-08-04',
-                tags: ['pagination', 'LiveProp', 'LiveAction', 'url'],
-                longDescription: 'The `ComponentWithPaginationTrait` from UX Pagination plugs numbered pagination
-                into any Live component: real links as a non-JavaScript fallback, a `LiveAction` for instant
-                page changes, and a URL that stays shareable, page number in the path included.',
+                tags: ['pagination', 'LiveProp', 'filters', 'OKLCH', 'url'],
+                longDescription: 'Filter the jerseys, change page, then refresh. LiveComponent makes every update
+                immediate; ordinary links keep the exact same result shareable.',
             ),
             new LiveDemo(
                 'cursor-pagination',
-                name: 'Cursor pagination',
-                description: 'Signed cursors, stable ordering, ordinary links: no JavaScript at all.',
+                name: 'Cursor Pagination',
+                description: 'Move through a changing release feed without letting new rows shift the boundary.',
                 author: 'smnandre',
                 publishedAt: '2026-08-04',
                 tags: ['pagination', 'cursor', 'no-js'],
-                longDescription: 'Cursor pagination resists inserts and deletions: the page boundary is a
-                signed token bound to the query and its order, not an offset. This demo runs on ordinary
-                links and full page loads: watch the `?cursor=` parameter change.',
+                longDescription: 'A page number counts from a beginning that can move. A cursor remembers the last
+                ordered value instead. Move forward, publish a new release, and watch the current boundary stay stable.',
             ),
             new LiveDemo(
-                'pagination-playground',
-                name: 'Pagination playground',
-                description: 'Pick a theme, tweak colors and navigation: the pagination re-renders live.',
+                'pagination-studio',
+                name: 'Pagination Studio',
+                description: 'Choose a strategy and theme, then copy the exact setup your application needs.',
                 author: 'smnandre',
                 publishedAt: '2026-08-04',
-                tags: ['pagination', 'theme', 'LiveProp', 'data-model'],
-                longDescription: 'Every control is a writable `LiveProp`: the theme is one argument of
-                `ux_pagination()`, the accent color drives the CSS custom properties of the default theme,
-                and the navigation window is one builder call. The Twig template of the selected theme is
-                shown as-is: no magic, just templates.',
+                tags: ['pagination', 'configuration', 'themes', 'installation'],
+                longDescription: 'Build a pagination policy from real constraints. Preview numbered, lookahead and
+                cursor results, choose a theme and asset pipeline, then copy the generated YAML, PHP, Twig and
+                optional asset files.',
             ),
         ];
     }

@@ -120,7 +120,7 @@ final class CodeBlock
         $lines = explode("\n", $content);
         $lines = \array_slice($lines, $lineStart - 1, $lineEnd - $lineStart + 1);
 
-        return implode("\n", $lines);
+        return SourceCleaner::removeCommonIndentation(implode("\n", $lines));
     }
 
     public function getLineAnchor(): ?string

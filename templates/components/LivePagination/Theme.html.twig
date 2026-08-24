@@ -1,0 +1,22 @@
+{% extends '@UXPagination/theme/default.html.twig' %}
+
+{% block navigation %}
+    {% set attr = navigation_attributes %}
+    <ul{{ block('attr') }}>
+        {{ block('previous') }}
+        <li class="ux-pagination__pages">
+            <ol class="ux-pagination__pages-list">
+                {{ block('pages') }}
+            </ol>
+        </li>
+        {{ block('next') }}
+    </ul>
+{% endblock %}
+
+{% block previous_label -%}
+    <span aria-hidden="true">&larr;</span>
+{%- endblock %}
+
+{% block next_label -%}
+    <span aria-hidden="true">&rarr;</span>
+{%- endblock %}

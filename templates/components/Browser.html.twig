@@ -1,36 +1,46 @@
+{% props
+    url = 'ux.symfony.com',
+    syncUrl = false,
+    showOrigin = true,
+    showPath = true,
+    showQuery = true,
+%}
+
 <div
-    class="place-self-center mx-auto {{ attributes.render('class') }}"
-    {{ attributes }}
+    {{ attributes.defaults({
+        class: 'browser',
+        'data-controller': 'browser',
+        'data-browser-sync-url-value': syncUrl ? 'true' : 'false',
+        'data-browser-url-value': url,
+        'data-browser-show-origin-value': showOrigin ? 'true' : 'false',
+        'data-browser-show-path-value': showPath ? 'true' : 'false',
+        'data-browser-show-query-value': showQuery ? 'true' : 'false',
+        'data-action': 'browser:loading-start->browser#startLoading browser:loading-end->browser#stopLoading browser:url-sync->browser#syncUrl',
+    }) }}
 >
-    <div class="rounded overflow-hidden border border-n-800 ">
-        <div class="grid grid-cols-[1fr_3fr_1fr] justify-between items-center p-2.5 bg-n-800 ">
-            <div class="flex gap-2 px-2">
-                <span class="size-3 rounded-[50%] shadow-sm bg-[#FF5C60]"></span>
-                <span class="size-3 rounded-[50%] shadow-sm bg-[#F2CA44]"></span>
-                <span class="size-3 rounded-[50%] shadow-sm bg-[#65C466]"></span>
+    <div class="browser_shell">
+        <header class="browser_header">
+            <div class="browser_controls" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-            <div class="bg-n-900 text-n-100 rounded text-xs w-auto py-2 px-2 flex items-center justify-between">
-                <span class="opacity-90"><twig:ux:icon name="lock" /></span>
-                <span>ux.symfony.com</span>
-                <span class="opacity-90"><twig:ux:icon name="refresh" /></span>
+
+            <div class="browser_url">
+                <span class="browser_url-icon" aria-hidden="true"><twig:ux:icon name="lock" /></span>
+                <span class="browser_url-value">
+                    <span class="browser_url-origin" data-browser-target="origin">{{ url }}</span>
+                    <span class="browser_url-path" data-browser-target="path" hidden></span>
+                    <span class="browser_url-query" data-browser-target="query" hidden></span>
+                </span>
+                <span class="browser_url-icon" aria-hidden="true"><twig:ux:icon name="refresh" /></span>
             </div>
-            {# <div class="Browser__actions">
-                {% if false %}
-                    <button class="Browser__action" title="Feedback">
-                        <twig:ux:icon name="circle-help" />
-                    </button>
-                {% endif %}
-                {% if githubUrl|default %}
-                    <a class="Browser__action" title="View on Github" href="{{ githubUrl }}">
-                        <twig:ux:icon name="github" />
-                    </a>
-                {% endif %}
-            </div> #}
-            <div></div>
-        </div>
-        <div class="w-full aspect-2/3 sm:aspect-video bg-body overflow-x-hidden overflow-y-auto thin">
-            {% block content %}
-            {% endblock %}
+
+            <div class="browser_actions"></div>
+        </header>
+
+        <div class="browser_viewport" data-browser-target="viewport">
+            {% block content %}{% endblock %}
         </div>
     </div>
 </div>

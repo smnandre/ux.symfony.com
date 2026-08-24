@@ -2,35 +2,112 @@
 
 {% block demo_container %}
 
-    <div class="max-w-[1140px] mx-auto mb-12">
-        <twig:Browser class="shadow-blur shadow-blur--rainbow w-full">
-            <div class="p-6">
-                <ul class="flex flex-col gap-2 mb-6 min-h-56 content-start">
-                    {% for release in pagination %}
-                        <li class="flex flex-wrap items-baseline gap-x-4 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-3">
-                            <span class="font-mono text-xs text-violet-700 dark:text-violet-400">v3.{{ release.id }}</span>
-                            <span class="font-medium">{{ release.name }}</span>
-                            <span class="ml-auto text-sm text-gray-500 dark:text-gray-400">{{ release.summary }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+    <div class="PaginationDemoShell max-w-[1140px] mx-auto mb-12">
+        <twig:Browser
+            class="PaginationDemoBrowser CursorPaginationBrowser shadow-blur shadow-blur--rainbow w-full"
+            syncUrl
+            :showOrigin="false"
+        >
+            <div class="CursorPagination">
+                <div class="CursorPagination_main">
+                    <header class="CursorPagination_header">
+                        <div>
+                            <p class="CursorPagination_eyebrow">UX release feed</p>
+                            <h2>Newest first</h2>
+                        </div>
+                        <p class="CursorPagination_cursor">
+                            <span aria-hidden="true"></span>
+                            {{ cursorPayload ? 'Resume from a boundary' : 'Start of feed' }}
+                        </p>
+                    </header>
 
-                {{ ux_pagination(pagination, theme: '@UXPagination/theme/tailwind.html.twig') }}
+                    <ol class="CursorPagination_feed">
+                        {% for release in pagination %}
+                            <li class="{{ release.id == 12 ? 'is-new' }}">
+                                <span class="CursorPagination_version">3.{{ release.id }}</span>
+                                <span class="CursorPagination_release">
+                                    <strong>{{ release.name }}</strong>
+                                    <small>{{ release.summary }}</small>
+                                </span>
+                                <span class="CursorPagination_order">{{ '%02d'|format(loop.index) }}</span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+
+                    <footer class="CursorPagination_footer">
+                        <p><strong>4</strong> releases per request</p>
+                        {{ ux_pagination(pagination, show_info: false) }}
+                    </footer>
+                </div>
+
+                <aside class="CursorPagination_inspector">
+                    <header>
+                        <p class="CursorPagination_eyebrow">Cursor inspector</p>
+                        <h3>{{ cursorPayload ? 'This request resumes here' : 'No cursor yet' }}</h3>
+                    </header>
+
+                    {% if cursorPayload %}
+                        <dl>
+                            <div>
+                                <dt>Direction</dt>
+                                <dd>{{ cursorPayload.direction }}</dd>
+                            </div>
+                            <div>
+                                <dt>Boundary</dt>
+                                <dd>id {{ cursorPayload.values|first }}</dd>
+                            </div>
+                            <div>
+                                <dt>Order</dt>
+                                <dd>{{ cursorPayload.order }}</dd>
+                            </div>
+                            <div>
+                                <dt>Context</dt>
+                                <dd>{{ cursorPayload.context }}</dd>
+                            </div>
+                            <div>
+                                <dt>Signature</dt>
+                                <dd>{{ cursorPayload.signature }}</dd>
+                            </div>
+                        </dl>
+                        <p class="CursorPagination_note">Readable, signed, and bound to this query. Changing any value invalidates it.</p>
+                    {% else %}
+                        <div class="CursorPagination_emptyCursor">
+                            <span>1</span>
+                            <p>Use <strong>Next</strong>. The link will carry the last ordered value of this slice.</p>
+                        </div>
+                    {% endif %}
+
+                    <div class="CursorPagination_change">
+                        {% if withNewRelease %}
+                            <p><span aria-hidden="true"></span> Release 3.12 was inserted at the top.</p>
+                            <a href="{{ path('app_demo_live_component_cursor_pagination', app.request.query.all|filter((value, key) => key != 'published')) }}">Reset feed</a>
+                        {% else %}
+                            <p><span aria-hidden="true"></span> Simulate data changing between requests.</p>
+                            <a href="{{ path('app_demo_live_component_cursor_pagination', app.request.query.all|merge({published: 1})) }}">Publish a release</a>
+                        {% endif %}
+                    </div>
+                </aside>
             </div>
         </twig:Browser>
     </div>
 
     <section class="py-12" style="padding-top: 6rem;">
         <div class="max-w-[1400px] mx-auto">
-            <twig:Code:CodeWithExplanationRow filename="src/Controller/Demo/LiveDemoController.php#L106-L121" reversed sticky>
-No component, no controller JavaScript, no Live anything: the paginator
-reads and validates `?cursor=` from the request, and every link is an
-ordinary link.
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Controller/Demo/LiveDemoController.php"
+                :lineStart="122"
+                :lineEnd="129"
+                reversed
+                sticky
+            >
+## Resume after a value, not a position
 
-The cursor token is signed and bound to the query and its order. Tamper
-with it and you get a clean 400. Rows inserted or deleted between two
-pages never shift the boundary: this is what makes cursor pagination
-stable on living data.
+The first request has no cursor. The next link contains the ordered value at the
+end of the slice - here, an `id` - plus its direction, order, and context.
+
+On the next request, the adapter asks for rows after that value. A newly inserted
+row can change the beginning without shifting this boundary. The token is signed,
+so changing its value or reusing it with another query produces a 400 response.
             </twig:Code:CodeWithExplanationRow>
         </div>
     </section>

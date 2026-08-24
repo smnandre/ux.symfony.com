@@ -19,9 +19,9 @@ final class UxReleaseFeed
     /**
      * @return list<array{id: int, name: string, summary: string}>
      */
-    public function all(): array
+    public function all(bool $withNewRelease = false): array
     {
-        return [
+        $releases = [
             ['id' => 11, 'name' => 'Pagination', 'summary' => 'Cursor and numbered pagination'],
             ['id' => 10, 'name' => 'Calendar Link', 'summary' => 'Add to calendar links'],
             ['id' => 9, 'name' => 'Native', 'summary' => 'Hotwire Native bridge'],
@@ -34,5 +34,11 @@ final class UxReleaseFeed
             ['id' => 2, 'name' => 'Turbo', 'summary' => 'Single-page experience'],
             ['id' => 1, 'name' => 'Stimulus', 'summary' => 'Modest JavaScript framework'],
         ];
+
+        if ($withNewRelease) {
+            array_unshift($releases, ['id' => 12, 'name' => 'New release', 'summary' => 'Published after you opened the feed']);
+        }
+
+        return $releases;
     }
 }

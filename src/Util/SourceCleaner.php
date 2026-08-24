@@ -73,6 +73,30 @@ class SourceCleaner
         return trim(implode("\n", $lines));
     }
 
+    public static function removeCommonIndentation(string $content): string
+    {
+        $lines = explode("\n", $content);
+        $indentation = null;
+
+        foreach ($lines as $line) {
+            if ('' === trim($line)) {
+                continue;
+            }
+
+            $lineIndentation = strspn($line, ' ');
+            $indentation = null === $indentation ? $lineIndentation : min($indentation, $lineIndentation);
+        }
+
+        if (!$indentation) {
+            return $content;
+        }
+
+        return implode("\n", array_map(
+            static fn (string $line): string => '' === trim($line) ? '' : substr($line, $indentation),
+            $lines,
+        ));
+    }
+
     public static function extractTwigBlock(string $content, string $targetTwigBlock, bool $showTwigExtends = true): string
     {
         $lines = explode("\n", $content);

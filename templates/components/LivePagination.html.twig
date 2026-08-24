@@ -1,0 +1,180 @@
+{% set pagination = this.pagination %}
+{% set filters = this.filters %}
+{% set stories = {
+    1: [
+        {cell: 6, point: 'none', text: pagination.totalItems ~ ' jerseys'},
+        {cell: 7, point: 'none', text: 'Six colors. Five patterns. Four contrasts.'},
+    ],
+    2: [
+        {cell: 5, point: 'left', text: 'Here is the total.'},
+        {cell: 1, point: 'left', text: 'Filter here to change the pagination.'},
+    ],
+    3: [
+        {cell: 2, point: 'up', text: 'The URL changed. Did you notice?'},
+        {cell: 11, point: 'down', text: 'The pagination remains a real link.'},
+    ],
+    4: [
+        {cell: 1, point: 'left', text: 'A filter always resets the current page to 1.'},
+        {cell: 12, point: 'down', text: 'Next works without JavaScript too.'},
+    ],
+    5: [
+        {cell: 6, point: 'left', text: 'Ten jerseys. Every time.'},
+        {cell: 7, point: 'right', text: 'Two cells to explain what is happening.'},
+    ],
+    6: [
+        {cell: 3, point: 'up', text: 'The page number lives in the URL path.'},
+        {cell: 10, point: 'down', text: 'The current page remains visible.'},
+    ],
+    11: [
+        {cell: 6, point: 'up', text: 'Every jersey comes from four modulo dimensions.'},
+        {cell: 7, point: 'down', text: 'Six base colors. Five patterns. Four contrasts.'},
+    ],
+} %}
+{% set annotations = stories[pagination.currentPage]|default([
+    {cell: 6, point: 'left', text: 'Page ' ~ pagination.currentPage ~ '. Ten jerseys.'},
+    {cell: 7, point: 'right', text: 'Two cells left for the story.'},
+]) %}
+{% set annotation_cells = annotations|map(annotation => annotation.cell) %}
+{% set card_cells = []|merge(range(1, 12)|filter(cell => cell not in annotation_cells)) %}
+
+<div{{ attributes }} class="LivePagination">
+    {{ include('components/LivePagination/JerseySymbols.html.twig') }}
+
+    <div class="layout">
+        <section class="results" aria-label="Generated jerseys">
+            <div class="frame" data-loading="addClass(is-loading)">
+                <ol class="grid" aria-label="Generated jerseys">
+                    {% for jersey in pagination %}
+                        {% set cell = card_cells[loop.index0] %}
+                        {% set row = ((cell - 1) / 4)|round(0, 'floor') + 1 %}
+                        {% set column = (cell - 1) % 4 + 1 %}
+                        <twig:JerseyCard
+                            :jersey="jersey"
+                            style="--row: {{ row }}; --column: {{ column }}"
+                        />
+                    {% else %}
+                        <li class="empty">No jersey matches these filters.</li>
+                    {% endfor %}
+                    {% if pagination.totalItems > 0 %}
+                        {% for annotation in annotations %}
+                            {% set row = ((annotation.cell - 1) / 4)|round(0, 'floor') + 1 %}
+                            {% set column = (annotation.cell - 1) % 4 + 1 %}
+                            <li
+                                class="hint"
+                                style="--row: {{ row }}; --column: {{ column }}"
+                                data-point="{{ annotation.point }}"
+                            >{{ annotation.text }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ol>
+            </div>
+
+            <footer class="nav">
+                <div class="nav-slots" aria-hidden="true">
+                    <span></span>
+                    <span><i></i><i></i><i></i><i></i><i></i></span>
+                    <span></span>
+                </div>
+                {{ include('components/LivePagination/Pagination.html.twig') }}
+            </footer>
+        </section>
+
+        <aside class="sidebar" aria-label="Filters and pagination state">
+            <div class="filters" aria-label="Filter jerseys">
+                <fieldset class="filter colors">
+                    <legend>Color</legend>
+
+                    <div>
+                        {% for name, value in filters.color %}
+                            <button
+                                type="button"
+                                class="color"
+                                aria-label="{{ name|capitalize }}"
+                                aria-pressed="{{ this.color == name ? 'true' : 'false' }}"
+                                style="--swatch: {{ value }}"
+                                data-action="live#action"
+                                data-live-action-param="toggleFilter"
+                                data-live-name-param="color"
+                                data-live-value-param="{{ name }}"
+                                data-loading="addAttribute(disabled)"
+                            ><span aria-hidden="true"></span></button>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+
+                <fieldset class="filter patterns">
+                    <legend>Pattern</legend>
+
+                    <div>
+                        {% for value, label in filters.pattern %}
+                            <button
+                                type="button"
+                                class="motif"
+                                aria-label="{{ label }}"
+                                aria-pressed="{{ this.pattern == value ? 'true' : 'false' }}"
+                                data-action="live#action"
+                                data-live-action-param="toggleFilter"
+                                data-live-name-param="pattern"
+                                data-live-value-param="{{ value }}"
+                                data-loading="addAttribute(disabled)"
+                            >
+                                <span class="sample" data-pattern="{{ value }}" aria-hidden="true"></span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="meta">
+                <h2>Pagination</h2>
+                <header class="stats">
+                    <div>
+                        <strong>{{ pagination.totalItems }}</strong>
+                        <span>Items</span>
+                    </div>
+                    <div>
+                        <strong>{{ pagination.itemsPerPage }}</strong>
+                        <span>Per page</span>
+                    </div>
+                    <div>
+                        <strong>{{ pagination.totalPages }}</strong>
+                        <span>Pages</span>
+                    </div>
+                </header>
+
+                <dl>
+                    <div>
+                        <dt>Page</dt>
+                        <dd>{{ pagination.currentPage }}</dd>
+                    </div>
+                    <div>
+                        <dt>Items shown</dt>
+                        <dd>{{ pagination.firstItemNumber }}-{{ pagination.lastItemNumber }}</dd>
+                    </div>
+                    <div>
+                        <dt>Has previous</dt>
+                        <dd class="bool" data-value="{{ pagination.hasPrevious ? 'true' : 'false' }}">
+                            <span aria-hidden="true"></span>
+                            {{ pagination.hasPrevious ? 'YES' : 'NO' }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Has more</dt>
+                        <dd class="bool" data-value="{{ pagination.hasNext ? 'true' : 'false' }}">
+                            <span aria-hidden="true"></span>
+                            {{ pagination.hasNext ? 'YES' : 'NO' }}
+                        </dd>
+                    </div>
+                    <div class="query">
+                        <dt>Query params</dt>
+                        <dd>
+                            {% if this.color %}<code>color={{ this.color }}</code>{% endif %}
+                            {% if this.pattern %}<code>pattern={{ this.pattern }}</code>{% endif %}
+                            {% if not this.color and not this.pattern %}<span>none</span>{% endif %}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </aside>
+    </div>
+</div>

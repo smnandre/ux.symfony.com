@@ -1,0 +1,20 @@
+<li
+    {{ attributes.defaults({
+        class: 'JerseyCard',
+        'aria-label': 'Jersey ' ~ jersey.identifier,
+    }) }}
+>
+    <span class="id">{{ jersey.identifier }}</span>
+    <span class="player">
+        <span
+            class="shirt"
+            style="--primary: {{ jersey.primaryColor }}; --secondary: var(--secondary-{{ jersey.secondary }})"
+        >
+            <svg viewBox="0 0 1068 1032" aria-hidden="true">
+                <use class="base" href="#jersey-base" />
+                <use class="motif" href="#jersey-motif-{{ jersey.pattern }}" clip-path="url(#jersey-clip)" />
+                <use class="logo logo-{{ jersey.secondary }} logo-{{ jersey.pattern }}" href="#jersey-logo-{{ jersey.logo }}" />
+            </svg>
+        </span>
+    </span>
+</li>

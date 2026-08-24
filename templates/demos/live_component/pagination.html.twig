@@ -2,38 +2,105 @@
 
 {% block demo_container %}
 
-    <div class="max-w-[1140px] mx-auto mb-12">
-        <twig:Browser class="shadow-blur shadow-blur--rainbow w-full">
-            <twig:EmojiPagination :page="page" paginationRoute="app_demo_live_component_pagination" />
+    <div class="LivePaginationStage max-w-[1220px] mx-auto mb-12">
+        <twig:Browser
+            class="LivePaginationBrowser shadow-blur shadow-blur--rainbow w-full"
+            :syncUrl="true"
+            :showOrigin="false"
+            :showQuery="false"
+        >
+            <twig:LivePagination :page="page" paginationRoute="app_demo_live_component_pagination" />
         </twig:Browser>
+
+        <div class="LivePaginationNotes" aria-label="Live pagination notes">
+            <twig:InfoCard
+                id="live-pagination-note-url"
+                title="The page lives in the URL"
+                number="1"
+                target=".LivePaginationBrowser .browser_url-path"
+                class="LivePaginationNote LivePaginationNote--url"
+            >
+                <p>Follow a pagination link and both the real route and this browser address update.</p>
+            </twig:InfoCard>
+
+            <twig:InfoCard
+                id="live-pagination-note-filters"
+                title="Filters reset the page"
+                number="2"
+                target=".LivePaginationBrowser .filters"
+                class="LivePaginationNote LivePaginationNote--filters"
+            >
+                <p>Changing any filter returns the pagination to page 1 before rendering the new result set.</p>
+            </twig:InfoCard>
+
+            <twig:InfoCard
+                id="live-pagination-note-navigation"
+                title="Every control remains a link"
+                number="3"
+                target=".LivePaginationBrowser .nav"
+                class="LivePaginationNote LivePaginationNote--navigation"
+            >
+                <p>Previous, numbered and next controls keep real URLs. LiveComponent only enhances them.</p>
+            </twig:InfoCard>
+        </div>
     </div>
 
-    <section class="py-12" style="padding-top: 6rem;">
+    <section class="LivePaginationExplanation py-12" style="padding-top: 6rem;">
         <div class="max-w-[1400px] mx-auto">
-            <twig:Code:CodeWithExplanationRow filename="src/Twig/Components/EmojiPagination.php" reversed sticky>
-The component uses the `ComponentWithPaginationTrait` from UX Pagination and
-declares how to build its pagination. The trait provides the `page` LiveProp,
-the `goToPage`, `nextPage` and `previousPage` LiveActions, and a cached
-`pagination` result.
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Controller/Demo/LiveDemoController.php"
+                :lineStart="97"
+                :lineEnd="112"
+                reversed
+                sticky
+            >
+## Route the page number
 
-Here the `page` prop maps into the route path (`/pagination/{page}`) through
-`UrlMapping(mapPath: true)`: change the page, and the URL itself changes.
+The route makes the page number part of the URL and constrains it to positive
+integers. The controller passes its initial value to the LiveComponent.
 
-The `perPage` prop is writable too: pick another page size and the whole
-pagination recomputes, resetting to page 1.
+Open, refresh, or share `/pagination/12`: the component starts on page 12 even
+before JavaScript runs.
             </twig:Code:CodeWithExplanationRow>
         </div>
     </section>
 
-    <section class="py-12">
+    <section class="LivePaginationExplanation py-12">
         <div class="max-w-[1400px] mx-auto">
-            <twig:Code:CodeWithExplanationRow filename="templates/components/EmojiPagination.html.twig" sticky>
-The template renders the current page items, then calls `ux_pagination()`.
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Twig/Components/LivePagination.php"
+                :lineStart="31"
+                :lineEnd="64"
+                sticky
+            >
+## Build the paginator
 
-`link_attributes` bridges every generated link to the Live action: the links
-keep their real `href` (they still work without JavaScript, page number in
-the path included), and `data-action="live#action:prevent"` upgrades clicks
-to instant Live updates.
+`UrlMapping(mapPath: true)` keeps the writable page property in the route path.
+`ComponentWithPaginationTrait` provides the current pagination and its navigation
+actions.
+
+During a Live request, `color` and `pattern` live in the component payload rather
+than Symfony's current query string. Passing them to `queryParameters()` keeps
+every generated `href` equivalent to the filtered view, including without
+JavaScript.
+
+After a filter changes, `resetPage()` prevents the previous page from pointing
+beyond the new result set.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="LivePaginationExplanation py-12">
+        <div class="max-w-[1400px] mx-auto">
+            <twig:Code:CodeWithExplanationRow filename="templates/components/LivePagination/Pagination.html.twig" reversed sticky>
+## Render real links
+
+`ux_pagination()` renders accessible controls with real URLs. The demo supplies
+only its page-grouping theme and the LiveComponent link attributes.
+
+LiveComponent enhances navigation without replacing the links, so they still work
+without JavaScript. Build a complete setup in the [Pagination
+Studio]({{ path('app_demo_live_component_pagination_studio') }}).
             </twig:Code:CodeWithExplanationRow>
         </div>
     </section>

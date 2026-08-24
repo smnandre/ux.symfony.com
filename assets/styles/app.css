@@ -132,9 +132,13 @@
 @import "./base/_typography.css";
 
 /* ─── Components ─── */
+@import "./components/_Browser.css";
 @import "./components/_container.css";
 @import "./components/_Card.css";
 @import "./components/_typography.css";
+@import "./components/_InfoCard.css";
+@import "./components/_LivePagination.css";
+@import "./components/_PaginationDemos.css";
 @import "./components/_DemoContainer.css";
 @import "./components/_Icon.css";
 @import "./components/_ProductGrid.css";

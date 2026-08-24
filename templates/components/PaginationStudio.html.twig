@@ -1,0 +1,162 @@
+<div{{ attributes.defaults({class: 'PaginationStudio PaginationStudio--' ~ this.theme}) }}>
+    <aside class="PaginationStudio_controls">
+        <header>
+            <p class="PaginationStudio_eyebrow">Pagination Studio</p>
+            <h2>Build your pagination</h2>
+            <p>Choose the contract, preview it, then copy only the files you need.</p>
+        </header>
+
+        <section>
+            <h3><span>01</span> Data and type</h3>
+            <fieldset>
+                <legend>Strategy</legend>
+                <div class="PaginationStudio_choices">
+                    {% for value, label in {numbered: 'Numbered', lookahead: 'Lookahead', cursor: 'Cursor'} %}
+                        <label>
+                            <input type="radio" name="strategy" value="{{ value }}" data-model="strategy" {% if this.strategy == value %}checked{% endif %}>
+                            <span>{{ label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <div class="PaginationStudio_ranges">
+                <label>
+                    <span>Preview items <output>{{ this.totalItems }}</output></span>
+                    <input type="range" min="24" max="480" step="24" value="{{ this.totalItems }}" data-model="totalItems">
+                </label>
+                <label>
+                    <span>Items per page <output>{{ this.itemsPerPage }}</output></span>
+                    <input type="range" min="4" max="40" step="2" value="{{ this.itemsPerPage }}" data-model="itemsPerPage">
+                </label>
+            </div>
+
+            {% if this.strategy != 'cursor' %}
+                <label class="PaginationStudio_number">
+                    <span>Maximum offset</span>
+                    <input type="number" min="0" max="1000000" step="1000" value="{{ this.maxOffset }}" data-model="maxOffset">
+                </label>
+            {% endif %}
+        </section>
+
+        {% if this.strategy == 'numbered' %}
+            <section>
+                <h3><span>02</span> Navigation</h3>
+                <div class="PaginationStudio_choices">
+                    {% for value, label in {sliding: 'Sliding', fixed: 'Fixed', full: 'Full'} %}
+                        <label>
+                            <input type="radio" name="mode" value="{{ value }}" data-model="mode" {% if this.mode == value %}checked{% endif %}>
+                            <span>{{ label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                {% if this.mode != 'full' %}
+                    <label class="PaginationStudio_range">
+                        <span>Visible pages <output>{{ this.size }}</output></span>
+                        <input type="range" min="3" max="9" value="{{ this.size }}" data-model="size">
+                    </label>
+                {% else %}
+                    <p class="PaginationStudio_hint">The generated safety limit matches the {{ (this.totalItems / this.itemsPerPage)|round(0, 'ceil') }} preview pages.</p>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        <section>
+            <h3><span>{{ this.strategy == 'numbered' ? '03' : '02' }}</span> Theme</h3>
+            <div class="PaginationStudio_choices PaginationStudio_choices--themes">
+                {% for value, label in {default: 'Default', bootstrap: 'Bootstrap', tailwind: 'Tailwind', application: 'Own theme'} %}
+                    <label>
+                        <input type="radio" name="theme" value="{{ value }}" data-model="theme" {% if this.theme == value %}checked{% endif %}>
+                        <span>{{ label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <div class="PaginationStudio_assetOptions">
+                <fieldset>
+                    <legend>Asset pipeline</legend>
+                    <div class="PaginationStudio_choices PaginationStudio_choices--two">
+                        {% for value, label in {'asset-mapper': 'AssetMapper', encore: 'Encore'} %}
+                            <label>
+                                <input type="radio" name="pipeline" value="{{ value }}" data-model="pipeline" {% if this.pipeline == value %}checked{% endif %}>
+                                <span>{{ label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+
+                {% if this.theme in ['default', 'application'] %}
+                    <div class="PaginationStudio_styleOptions">
+                        <label class="PaginationStudio_switch">
+                            <input type="checkbox" data-model="includeCss" {% if this.includeCss %}checked{% endif %}>
+                            <span>Include CSS</span>
+                        </label>
+                        {% if this.includeCss %}
+                            <label class="PaginationStudio_color">
+                                <span>Accent</span>
+                                <input type="color" value="{{ this.accentColor }}" data-model="accentColor">
+                            </label>
+                        {% endif %}
+                    </div>
+                {% elseif this.theme == 'tailwind' %}
+                    <p class="PaginationStudio_hint">The Studio adds the bundle templates to Tailwind sources.</p>
+                {% else %}
+                    <p class="PaginationStudio_hint">Bootstrap supplies the CSS. No pagination stylesheet is added.</p>
+                {% endif %}
+            </div>
+        </section>
+    </aside>
+
+    <div class="PaginationStudio_workspace">
+        <section class="PaginationStudio_preview" data-loading="addClass(is-loading)">
+            <header>
+                <div>
+                    <p class="PaginationStudio_eyebrow">Live preview</p>
+                    <h3>{{ this.strategy|capitalize }} with {{ this.theme }} theme</h3>
+                </div>
+                <p>{{ this.totalItems }} items / {{ this.itemsPerPage }} per page</p>
+            </header>
+
+            <div class="PaginationStudio_result" style="{{ this.accentStyle }}">
+                {{ ux_pagination(
+                    this.preview,
+                    theme: this.themeTemplate,
+                    show_info: this.showInfo,
+                    link_attributes: this.strategy == 'cursor' ? {} : this.paginationLinkAttributes,
+                ) }}
+            </div>
+
+            <label class="PaginationStudio_summary">
+                <input type="checkbox" data-model="showInfo" {% if this.showInfo %}checked{% endif %}>
+                <span>Show result summary</span>
+            </label>
+        </section>
+
+        <section class="PaginationStudio_output" aria-labelledby="pagination-studio-output-title">
+            <header>
+                <div>
+                    <p class="PaginationStudio_eyebrow">Ready to use</p>
+                    <h3 id="pagination-studio-output-title">Your installation</h3>
+                </div>
+                <p>Each choice changes the smallest useful setup.</p>
+            </header>
+
+            <div class="PaginationStudio_outputTabs" role="group" aria-label="Generated file">
+                {% for value, item in this.outputs %}
+                    <label>
+                        <input type="radio" name="output" value="{{ value }}" data-model="output" {% if this.output == value %}checked{% endif %}>
+                        <span>{{ item.label }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <twig:Code:CodeBlockInline
+                :code="this.outputSource"
+                :language="this.selectedOutput.language"
+                :filename="this.selectedOutput.filename"
+                :collapseClass="false"
+            />
+        </section>
+    </div>
+</div>

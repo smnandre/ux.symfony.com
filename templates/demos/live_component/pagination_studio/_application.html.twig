@@ -1,0 +1,11 @@
+{% extends '@UXPagination/theme/default.html.twig' %}
+
+{% block pagination %}
+    {% set attributes = attributes|merge({
+        class: (attributes.class|default('') ~ ' AppPagination')|trim,
+    }) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block previous_label %}&larr; Newer{% endblock %}
+{% block next_label %}Older &rarr;{% endblock %}

@@ -38,7 +38,7 @@ class PaginationController extends AbstractController
             'demos' => [
                 $liveDemoRepository->find('pagination'),
                 $liveDemoRepository->find('cursor-pagination'),
-                $liveDemoRepository->find('pagination-playground'),
+                $liveDemoRepository->find('pagination-studio'),
             ],
         ]);
     }

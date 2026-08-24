@@ -65,6 +65,31 @@ class SourceCleanerTest extends TestCase
         $this->assertSame($expected, SourceCleaner::cleanupPhpFile($source, removeClass: true));
     }
 
+    public function testItRemovesCommonIndentationFromAnExtractedSourceRange()
+    {
+        $source = <<<'EOF'
+                #[Route(
+                    '/pagination/{page}',
+                )]
+                public function pagination(): Response
+                {
+                    return new Response();
+                }
+            EOF;
+
+        $expected = <<<'EOF'
+            #[Route(
+                '/pagination/{page}',
+            )]
+            public function pagination(): Response
+            {
+                return new Response();
+            }
+            EOF;
+
+        self::assertSame($expected, SourceCleaner::removeCommonIndentation($source));
+    }
+
     public function testItExtractsTwigBlock()
     {
         $source = <<<EOF
