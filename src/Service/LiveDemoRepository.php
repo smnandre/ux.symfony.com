@@ -22,6 +22,18 @@ class LiveDemoRepository
     {
         return [
             new LiveDemo(
+                'live-remove',
+                name: 'Removing a Component',
+                description: 'Remove a LiveComponent after its final render, with an optional CSS exit animation.',
+                author: 'smnandre',
+                publishedAt: '2026-08-26',
+                tags: ['remove', 'animation', 'LiveAction', 'LiveResponse'],
+                longDescription: <<<EOF
+                    Return `LiveResponse::remove()` from a [`LiveAction`](/live-component). LiveComponent renders once more, then removes the component root.
+                    Style `[data-live-removing]` to animate the exit.
+                    EOF,
+            ),
+            new LiveDemo(
                 'live-download',
                 name: 'Downloading Files',
                 description: 'Download from a route or send generated content while preserving state and events.',
