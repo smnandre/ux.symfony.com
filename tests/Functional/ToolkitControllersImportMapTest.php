@@ -17,7 +17,7 @@ use Symfony\Component\AssetMapper\ImportMap\ImportMapConfigReader;
 
 final class ToolkitControllersImportMapTest extends KernelTestCase
 {
-    public function testToolkitControllersAreAutoRegisteredFromTheVendoredKits(): void
+    public function testToolkitControllersAreAutoRegisteredFromTheVendoredKits()
     {
         self::bootKernel();
 
