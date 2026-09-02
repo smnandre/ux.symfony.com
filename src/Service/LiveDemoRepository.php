@@ -22,6 +22,18 @@ class LiveDemoRepository
     {
         return [
             new LiveDemo(
+                'live-download',
+                name: 'Downloading Files',
+                description: 'Download from a route or send generated content while preserving state and events.',
+                author: 'smnandre',
+                publishedAt: '2026-08-04',
+                tags: ['file', 'download', 'events', 'LiveAction'],
+                longDescription: <<<EOF
+                    Return `LiveResponse::downloadUrl()` for a file served by its own route, or `LiveResponse::downloadFile()` for content built by a [`LiveAction`](/live-component).
+                    LiveComponent renders state changes and delivers queued events before starting the download.
+                    EOF,
+            ),
+            new LiveDemo(
                 'infinite-scroll-2',
                 name: 'Infinite Scroll - 2/2',
                 description: 'Loading on-scroll, flexible layout grid, colorfull loading animations and... more T-Shirts!',
