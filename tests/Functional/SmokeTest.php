@@ -58,7 +58,7 @@ class SmokeTest extends KernelTestCase
         yield 'sitemap.xml' => ['/sitemap.xml'];
     }
 
-    public function testHomepageListsUiKits(): void
+    public function testHomepageListsUiKits()
     {
         $page = $this->browser()
             ->visit('/')
