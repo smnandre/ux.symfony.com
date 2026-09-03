@@ -65,7 +65,7 @@ class SourceCleanerTest extends TestCase
         $this->assertSame($expected, SourceCleaner::cleanupPhpFile($source, removeClass: true));
     }
 
-    public function testItRemovesSharedIndentationFromExtractedLines(): void
+    public function testItRemovesSharedIndentationFromExtractedLines()
     {
         $source = <<<'PHP'
                 #[LiveAction]

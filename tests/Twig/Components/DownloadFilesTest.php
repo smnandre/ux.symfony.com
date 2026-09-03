@@ -18,7 +18,7 @@ use Symfony\UX\LiveComponent\LiveResponder;
 
 final class DownloadFilesTest extends TestCase
 {
-    public function testDefinesThreeDownloadExamples(): void
+    public function testDefinesThreeDownloadExamples()
     {
         $component = $this->createComponent();
         $examples = $component->getExamples();
@@ -29,7 +29,7 @@ final class DownloadFilesTest extends TestCase
         self::assertSame('downloadFileWithEvents', $examples['events']['action']);
     }
 
-    public function testGeneratedFileDownloadUsesCurrentState(): void
+    public function testGeneratedFileDownloadUsesCurrentState()
     {
         $component = $this->createComponent();
         $component->totalDownloads = 3;
@@ -51,7 +51,7 @@ final class DownloadFilesTest extends TestCase
         self::assertSame('live-report-1.txt', $component->lastGeneratedFilename);
     }
 
-    public function testUrlDownloadUpdatesProps(): void
+    public function testUrlDownloadUpdatesProps()
     {
         $component = $this->createComponent();
         $urlGenerator = $this->createMock(UrlGeneratorInterface::class);
@@ -68,7 +68,7 @@ final class DownloadFilesTest extends TestCase
         self::assertSame(1, $component->totalDownloads);
     }
 
-    public function testFileDownloadWithEventsQueuesBothEventTypes(): void
+    public function testFileDownloadWithEventsQueuesBothEventTypes()
     {
         $responder = new LiveResponder();
         $component = $this->createComponent($responder);

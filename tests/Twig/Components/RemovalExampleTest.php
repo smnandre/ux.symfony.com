@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RemovalExampleTest extends TestCase
 {
-    public function testResetChangesOnlyItsOwnRevision(): void
+    public function testResetChangesOnlyItsOwnRevision()
     {
         $component = new RemovalExample();
         $otherComponent = new RemovalExample();

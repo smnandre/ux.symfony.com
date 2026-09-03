@@ -17,12 +17,12 @@ use Symfony\UX\LiveComponent\LiveResponder;
 
 final class NotificationBannerTest extends TestCase
 {
-    public function testPlainRemoval(): void
+    public function testPlainRemoval()
     {
         self::assertTrue((new NotificationBanner())->dismiss()->isRemove());
     }
 
-    public function testRemovalWithEvents(): void
+    public function testRemovalWithEvents()
     {
         $component = new NotificationBanner();
         $responder = new LiveResponder();

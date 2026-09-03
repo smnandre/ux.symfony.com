@@ -56,7 +56,7 @@ class LiveComponentDemosTest extends KernelTestCase
         }
     }
 
-    public function testLiveDownloadDocumentRoute(): void
+    public function testLiveDownloadDocumentRoute()
     {
         $this->browser()
             ->visit('/demos/live-component/live-download/live-components.md')
@@ -66,7 +66,7 @@ class LiveComponentDemosTest extends KernelTestCase
         ;
     }
 
-    public function testLiveDownloadDocumentRouteRejectsAnUnknownFilename(): void
+    public function testLiveDownloadDocumentRouteRejectsAnUnknownFilename()
     {
         $this->browser()
             ->visit('/demos/live-component/live-download/unknown.md')
