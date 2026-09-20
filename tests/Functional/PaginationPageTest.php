@@ -42,11 +42,37 @@ final class PaginationPageTest extends KernelTestCase
         self::assertSame('website', $page->crawler()->filter('meta[property="og:type"]')->attr('content'));
         self::assertSame('Symfony UX Pagination', $page->crawler()->filter('meta[property="og:image:alt"]')->attr('content'));
         self::assertSame('Symfony UX Pagination', $page->crawler()->filter('meta[name="twitter:image:alt"]')->attr('content'));
-        self::assertSame(1, $page->crawler()->filter('[data-pagination-hero] a[href="#"]')->count());
+        self::assertSame(1, $page->crawler()->filter('[data-pagination-hero] a[href="/demos/pagination"]')->count());
         self::assertSame(1, $page->crawler()->filter('[data-pagination-feature="live-component"] a[href="#"]')->count());
         self::assertSame(3, $page->crawler()->filter('[data-pagination-demo-list] .Card')->count());
-        self::assertSame(3, $page->crawler()->filter('[data-pagination-demo-list] .Card a[href="#"]')->count());
+        self::assertSame(3, $page->crawler()->filter('[data-pagination-demo-list] .Card a')->count());
         self::assertSame(0, $page->crawler()->filter('[data-pagination-demo-list] .Tag')->count());
     }
 
+    public function testDemosIndex(): void
+    {
+        $page = $this->browser()
+            ->visit('/demos/pagination')
+            ->assertSuccessful()
+            ->assertSeeIn('h1', 'Pagination demos')
+            ->assertSee('Live Pagination')
+            ->assertSee('Cursor Pagination')
+            ->assertSee('Pagination Themes')
+        ;
+
+        self::assertSame(3, $page->crawler()->filter('.DemoCardGrid .Card')->count());
+        self::assertSame(3, $page->crawler()->filter('.DemoCardGrid .Card a')->count());
+        self::assertGreaterThan(0, $page->crawler()->filter('.DemoCardGrid .Tag')->count());
+        self::assertSame('Pagination demos - Symfony UX', $page->crawler()->filter('title')->text());
+    }
+
+    public function testPaginationDemosAreDiscoverable(): void
+    {
+        $page = $this->browser()
+            ->visit('/demos')
+            ->assertSuccessful()
+        ;
+
+        self::assertSame(1, $page->crawler()->filter('.Card a[href="/demos/pagination"]')->count());
+    }
 }

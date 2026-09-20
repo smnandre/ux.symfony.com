@@ -24,6 +24,13 @@
 
     <div class="max-w-[1400px] mx-auto px-6 pt-6 md:px-12">
         <div style="display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));">
+            <twig:Card
+                name="Pagination demos"
+                description="Explore numbered pages, stable cursors, Twig themes, and reactive navigation."
+                image="{{ asset('images/ux_packages/pagination-1200x675.png') }}"
+                url="{{ path('app_demo_pagination') }}"
+                :tags="['pagination']"
+            />
             {% for demo in liveComponentDemos %}
                 <twig:Demo:DemoCard demo="{{ demo }}" :showTags="true" />
             {% endfor %}

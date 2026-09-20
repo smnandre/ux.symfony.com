@@ -45,7 +45,7 @@
                         />
                     </div>
                     <nav class="PaginationHeroLinks" aria-label="Pagination resources">
-                        <a href="#">
+                        <a href="{{ path('app_demo_pagination') }}">
                             <twig:ux:icon name="browser" class="Icon size-4" />
                             Live Demos
                         </a>
@@ -578,7 +578,7 @@ self::assertSame(
                 <h2 class="PaginationSectionTitle mb-0 max-w-2xl">
                     See every <strong class="PaginationAccentPrimary font-bold">page</strong> in action.
                 </h2>
-                <a href="#" class="PaginationCta PaginationCta--primary mt-7 md:mt-0">
+                <a href="{{ path('app_demo_pagination') }}" class="PaginationCta PaginationCta--primary mt-7 md:mt-0">
                     Browse pagination demos
                     <twig:ux:icon name="lucide:chevron-right" class="Icon size-4 PaginationCtaIcon" />
                 </a>

@@ -24,13 +24,15 @@ final class LiveDemo extends Demo
         string $publishedAt,
         array $tags,
         private string $longDescription,
+        private ?string $route = null,
+        private ?string $template = null,
     ) {
         parent::__construct($identifier, $name, $description, $author, $publishedAt, $tags);
     }
 
     public function getRoute(): string
     {
-        return 'app_demo_live_component_'.str_replace('-', '_', parent::getIdentifier());
+        return $this->route ?? 'app_demo_live_component_'.str_replace('-', '_', parent::getIdentifier());
     }
 
     public function getScreenshotFilename(?string $format = null): string
@@ -40,7 +42,7 @@ final class LiveDemo extends Demo
 
     public function getTemplate(): string
     {
-        return \sprintf('demos/live_component/%s.html.twig', str_replace('-', '_', parent::getIdentifier()));
+        return $this->template ?? \sprintf('demos/live_component/%s.html.twig', str_replace('-', '_', parent::getIdentifier()));
     }
 
     public function getLongDescription(): string

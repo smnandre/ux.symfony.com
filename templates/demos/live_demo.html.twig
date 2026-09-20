@@ -2,7 +2,7 @@
 
 {% set meta = {
     title: demo.name,
-    title_suffix: ' -  Live Component - Symfony UX',
+    title_suffix: ' - ' ~ (demo_package_name|default('Live Component')) ~ ' - Symfony UX',
     description: demo.description|striptags,
     canonical: url(demo.route),
     social: {
@@ -26,7 +26,7 @@
                 <div class="text-center md:mt-0">
                     <p class="eyebrows mb-4">
                         <a href="{{ url('app_demos') }}">DEMOS</a> /
-                        <a href="{{ url('app_live_component') }}">Live Component</a>
+                        {% block demo_breadcrumb %}<a href="{{ url('app_live_component') }}">Live Component</a>{% endblock %}
                     </p>
                     <h1 class="text-center">{{ demo.name }}</h1>
                     <div style="font-size: 1rem; line-height: 1.75rem;" class="mt-6 text-balance demo-introduction Wysiwyg">
@@ -71,12 +71,14 @@
         </div>
     {% endblock %}
 
-    <div class="max-w-[1140px] mx-auto px-4 pt-6 md:px-12 md:pt-12">
-        <div class="flex flex-wrap gap-6 justify-center items-center">
-            <twig:Badge:Github label="Author" username="{{ demo.author }}" />
-            <twig:Badge:Date label="Published" date="{{ demo.publishedAt }}" />
+    {% block demo_meta %}
+        <div class="max-w-[1140px] mx-auto px-4 pt-6 md:px-12 md:pt-12">
+            <div class="flex flex-wrap gap-6 justify-center items-center">
+                <twig:Badge:Github label="Author" username="{{ demo.author }}" />
+                <twig:Badge:Date label="Published" date="{{ demo.publishedAt }}" />
+            </div>
         </div>
-    </div>
+    {% endblock %}
 
 {% endblock %}
 
