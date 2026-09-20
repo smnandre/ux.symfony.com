@@ -620,6 +620,9 @@
     "symfony/ux-notify": {
         "version": "2.x-dev"
     },
+    "symfony/ux-pagination": {
+        "version": "3.x-dev"
+    },
     "symfony/ux-react": {
         "version": "2.x-dev"
     },
