@@ -1,0 +1,16 @@
+{# @prop links array Documentation links with `title` and `url` keys #}
+{# @prop label string Accessible label for the navigation #}
+{# @prop intro string Visible introduction before the links #}
+{%- props links, label, intro = 'See documentation:' -%}
+
+<nav
+    {{ attributes.defaults({class: 'DocumentationLinks'}) }}
+    aria-label="{{ label }}"
+>
+    <span>{{ intro }}</span>
+    <ul>
+        {% for link in links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>

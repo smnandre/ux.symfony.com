@@ -1,0 +1,33 @@
+{% set pagination_demos = [
+    {
+        name: 'Live Pagination',
+        description: 'Add reactive filters and page changes to ordinary pagination links.',
+        image: 'images/live_demo/pagination.png',
+        tags: ['pagination', 'LiveComponent', 'filters', 'trait'],
+    },
+    {
+        name: 'Cursor Pagination',
+        description: 'Move through ordered values without letting earlier changes shift the current slice.',
+        image: 'images/live_demo/cursor-pagination.png',
+        tags: ['pagination', 'cursor', 'no-js'],
+    },
+    {
+        name: 'Pagination Themes',
+        description: 'Render the same pages with a built-in theme or a focused Twig block override.',
+        image: 'images/live_demo/pagination-themes.png',
+        tags: ['pagination', 'Twig', 'themes', 'blocks'],
+    },
+] %}
+
+<div class="DemoCardGrid {{ class|default('') }}">
+    {% for demo in pagination_demos %}
+        <twig:Card
+            name="{{ demo.name }}"
+            description="{{ demo.description }}"
+            image="{{ asset(demo.image) }}"
+            url="#"
+            :tags="demo.tags"
+            :showTags="show_tags is defined ? show_tags : true"
+        />
+    {% endfor %}
+</div>

@@ -124,6 +124,18 @@ class UxPackageRepository
                 ->setDocsLink('https://native.hotwired.dev/', 'Hotwire Native documentation.'),
 
             new UxPackage(
+                'pagination',
+                'Pagination',
+                'app_pagination',
+                '#635AA6',
+                'linear-gradient(145deg, rgba(255, 255, 255, 0.10) 0%, rgba(99, 90, 166, 0) 45%, rgba(41, 36, 67, 0.18) 100%)',
+                'Pagination for all. One page ahead.',
+                'Paginate any data with numbered pages, lookahead, or cursors.',
+                'I need to paginate my results.',
+                imageFileName: 'pagination.png',
+            ),
+
+            new UxPackage(
                 'autocomplete',
                 'Autocomplete',
                 'app_autocomplete',

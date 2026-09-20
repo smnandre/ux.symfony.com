@@ -1,0 +1,24 @@
+{# @prop items array Feature items with `icon`, optional `iconClass`, HTML `title`, and plain-text `description` keys #}
+{# @prop title string Accessible heading for the feature group #}
+{# @prop titleId string Unique identifier for the accessible heading #}
+{%- props items, title, titleId -%}
+
+<section
+    {{ attributes.defaults({class: 'FeaturesCluster'}) }}
+    aria-labelledby="{{ titleId }}"
+>
+    <div class="FeaturesCluster_inner">
+        <h2 id="{{ titleId }}" class="sr-only">{{ title }}</h2>
+        <ul class="FeaturesCluster_grid">
+            {% for item in items %}
+                <li class="FeaturesCluster_item" data-feature-cluster-item>
+                    <twig:ux:icon name="{{ item.icon }}" class="FeaturesCluster_icon {{ item.iconClass|default('') }}" aria-hidden="true" />
+                    <div>
+                        <h3>{{ item.title|raw }}</h3>
+                        <p>{{ item.description }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>

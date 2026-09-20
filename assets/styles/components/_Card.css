@@ -1,21 +1,30 @@
 @layer components {
+    .DemoCardGrid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    }
+
     .Tag {
         display: inline-flex;
         align-items: center;
         max-inline-size: 100%;
         padding-block: .25rem;
-        padding-inline: .5rem;
+        padding-inline: .4rem;
         border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-sm);
+        border-radius: .4rem;
         background-color: var(--color-subtle);
         color: var(--color-body-text);
         font-family: var(--font-sans);
-        font-size: .8rem;
+        font-size: .68rem;
         font-stretch: semi-condensed;
-        font-weight: 400;
+        font-weight: 300;
+        letter-spacing: .045em;
         line-height: 1.25;
         list-style: none;
+        opacity: .6;
         overflow-wrap: anywhere;
+        text-transform: uppercase;
     }
 
     .stretched-link::after {

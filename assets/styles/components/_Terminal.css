@@ -9,6 +9,7 @@
         font-size: var(--text-sm);
         /* prevents long <pre> lines from overflowing the parent grid item */
         display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
         min-width: 0;
 
         ::selection {
@@ -24,20 +25,16 @@
         align-items: center;
         justify-content: space-between;
         padding: --spacing(2);
-        opacity: var(--header-opacity, 1);
-        transition: all 250ms ease-in-out;
-        overflow-x: auto;
-
-        .Terminal:hover & {
-            opacity: 1;
-            transition: all 350ms ease-out;
-        }
+        font-size: var(--text-xs);
+        min-width: 0;
+        overflow: hidden;
     }
 
     .Terminal_title {
         color: #fff;
         display: inline-block;
         flex-shrink: 1;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -47,7 +44,7 @@
             font-size: inherit;
             background-color: inherit;
             color: inherit;
-            opacity: 0.8;
+            opacity: 1;
 
             em {
                 font-style: normal;
@@ -109,27 +106,66 @@
     }
 
     .Terminal_actions {
+        flex-shrink: 0;
         white-space: nowrap;
     }
 
+    .Terminal_title,
+    .Terminal_header .Terminal_actions {
+        opacity: 0.7;
+        transition: opacity 250ms ease-in-out;
+    }
+
+    .Terminal:hover :is(.Terminal_title, .Terminal_header .Terminal_actions) {
+        opacity: 1;
+        transition-duration: 350ms;
+        transition-timing-function: ease-out;
+    }
+
     .code-buttons :is(a, button) {
-        display: inline-block;
-        padding: --spacing(1) --spacing(2);
+        display: inline-flex;
+        width: --spacing(8);
+        height: --spacing(8);
+        align-items: center;
+        justify-content: center;
+        padding: 0;
         background: none;
         color: var(--color-n-200);
-        font-size: var(--text-sm);
-        line-height: 1.5;
+        font-size: var(--text-xs);
+        line-height: 1;
         cursor: pointer;
-        transition: color 250ms ease-in-out;
+        transition-property: color, opacity;
+        transition-duration: 250ms;
+        transition-timing-function: ease-in-out;
 
         &:hover {
             color: var(--color-n-100);
+            opacity: 1;
         }
+
+        svg {
+            width: --spacing(3.5);
+            height: --spacing(3.5);
+        }
+    }
+
+    .Terminal_body .code-buttons :is(a, button) {
+        opacity: 0.7;
     }
 
     /* offset parent for the `.copied button::after` feedback ring */
     .btn-copy {
         position: relative;
+
+        &::before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: --spacing(10);
+            height: --spacing(10);
+            content: '';
+            transform: translate(-50%, -50%);
+        }
     }
 
     /* copy button inside the code block itself */
@@ -175,7 +211,8 @@
         flex-direction: row;
         gap: --spacing(2);
         opacity: 0.35;
-        transition: all 250ms;
+        transition-property: color, background-color, opacity;
+        transition-duration: 250ms;
         text-transform: capitalize;
     }
 
@@ -198,7 +235,7 @@
         user-select: none;
         margin-inline-start: -1ch;
         opacity: 0;
-        transition: all 250ms;
+        transition: opacity 250ms;
     }
 
     .Terminal:hover .hl-gutter {

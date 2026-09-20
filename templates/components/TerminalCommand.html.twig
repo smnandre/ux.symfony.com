@@ -1,14 +1,23 @@
-<div {{ attributes.defaults({class: 'relative z-[1] flex flex-row items-center self-center gap-2 p-2 max-w-full w-fit overflow-clip rounded-sm before:content-[""] before:absolute before:inset-0 before:-z-[1] before:block before:bg-black before:opacity-90 before:backdrop-blur-[5px]'}) }}
+{% props command, label = null, accent = null %}
+
+<div {{ attributes.defaults({class: 'relative z-[1] flex h-14 max-w-full w-fit flex-row items-center self-center gap-2 overflow-hidden rounded-2xl p-2 before:content-[""] before:absolute before:inset-0 before:-z-[1] before:block before:bg-black before:opacity-90 before:backdrop-blur-[5px] sm:gap-3'}) }}
     data-controller="clipboarder"
     data-clipboarder-source-value="{{ command }}"
 >
     <pre
-        class="z-4 m-0 px-2 w-[inherit] overflow-x-auto border-0 bg-transparent outline-none text-white text-[.9rem] font-mono"
-        aria-label="{{ label|default }}"
-    ><code>{{ command }}</code></pre>
+        class="z-4 m-0 min-w-0 flex-1 overflow-x-auto border-0 bg-transparent px-1 outline-none font-mono text-[.625rem] text-white sm:px-2 sm:text-[.9rem]"
+        aria-label="{{ label }}"
+    ><code>
+        {%- if accent and accent in command -%}
+            {%- set command_parts = command|split(accent, 2) -%}
+            {{- command_parts[0] -}}<strong class="TerminalCommandAccent">{{ accent }}</strong>{{- command_parts[1]|default('') -}}
+        {%- else -%}
+            {{- command -}}
+        {%- endif -%}
+    </code></pre>
     <button
         type="button"
-        class="relative z-4 py-1.5 px-2.5 rounded border-0 bg-(--color-accent) text-white opacity-90 hover:opacity-100"
+        class="relative z-4 grid size-10 shrink-0 place-items-center rounded-xl border-0 bg-(--color-accent) p-0 text-white opacity-90 hover:opacity-100"
         aria-label="Copy command"
         data-action="clipboarder#copy"
     >

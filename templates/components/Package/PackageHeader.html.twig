@@ -1,6 +1,6 @@
 <div
-    class="PackageHeader mb-12 {{ not (command ?? true) ? 'pb-12' }} pt-12"
-    style="background: {{ package.gradient }}, {{ package.color }}; --color-accent: {{ package.color }};"
+    class="PackageHeader {{ not (command ?? true) ? 'pb-12' }} pt-12"
+    style="background: {{ background ?? (package.gradient ~ ', ' ~ package.color) }}; --color-accent: {{ package.color }};"
 >
     <div class="max-w-[1400px] mx-auto px-6 pt-6 md:px-12 md:pt-12 relative">
 
@@ -14,26 +14,31 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap gap-4 justify-center translate-y-1/2">
+        {% block header_action_area %}
+        <div class="PackageHeaderActions flex flex-wrap items-stretch justify-center gap-4 translate-y-1/2">
             {% if command is not defined or command %}
                 <twig:TerminalCommand
                     aria-label="Composer command to install {{ package.humanName }}"
+                    class="PackageHeaderCommand"
                     command="{{ package.composerRequireCommand }}"
                     style="--color-accent: {{ package.color }};"
                 />
             {% endif %}
 
+            {% block header_primary_action %}{% endblock %}
+
             {% if package.shouldShowDocsLink %}
                 <a
                     href="{{ package.officialDocsUrl }}"
-                    class="bg-body flex border rounded gap-2 py-2 px-4 relative items-center transition-colors"
+                    class="PackageHeaderAction PackageHeaderAction--docs relative flex items-center justify-center gap-2 border transition-colors"
                 >
-                    <twig:ux:icon name="mdi:book-open-variant-outline" class="Icon size-6" />
+                    <twig:ux:icon name="book-text" class="Icon size-5" />
                     Read the docs
                 </a>
             {% endif %}
 
             {% block header_actions %}{% endblock %}
         </div>
+        {% endblock %}
     </div>
 </div>

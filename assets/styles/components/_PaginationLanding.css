@@ -1,0 +1,893 @@
+@layer components {
+    :root {
+        --pagination-primary: #635aa6;
+        --pagination-primary-text: #5f569b;
+        --pagination-accent: #a7a3e8;
+        --pagination-accent-ink: #292443;
+        --pagination-accent-text: var(--pagination-primary-text);
+    }
+
+    .dark {
+        --pagination-primary-text: var(--pagination-accent);
+        --pagination-accent-text: var(--pagination-accent);
+    }
+
+    .PaginationEyebrow {
+        margin: 0;
+        color: var(--pagination-primary-text);
+        font-family: var(--font-title);
+        font-size: .72rem;
+        font-stretch: semi-condensed;
+        font-weight: 600;
+        letter-spacing: .12em;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    .PaginationSectionTitle {
+        margin: 0;
+        font-family: var(--font-title);
+        font-size: clamp(2.35rem, 3.8vw, 3.7rem);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -.04em;
+        line-height: .98;
+        text-wrap: balance;
+    }
+
+    .PaginationSectionHeading {
+        max-inline-size: 48rem;
+        margin-block-end: clamp(3.5rem, 7vw, 5rem);
+    }
+
+    .PaginationSectionHeading .PaginationEyebrow {
+        margin-block-end: 1.25rem;
+    }
+
+    .PaginationSectionHeading > p:last-child {
+        max-inline-size: 42rem;
+        margin: 2rem 0 0;
+        color: color-mix(in oklch, var(--color-body-text) 80%, transparent);
+        font-size: 1.125rem;
+        line-height: 1.75;
+        text-wrap: balance;
+    }
+
+    .PaginationSectionHeading--centered {
+        margin-inline: auto;
+        text-align: center;
+    }
+
+    .PaginationSectionHeading--centered > p:last-child {
+        margin-inline: auto;
+    }
+
+    .PaginationFeatureTitle {
+        font-family: var(--font-title);
+        font-size: clamp(1.85rem, 2.6vw, 2.2rem);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -.025em;
+        line-height: 1.08;
+        text-wrap: balance;
+    }
+
+    .PaginationCta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-block-size: 2.75rem;
+        gap: .5rem;
+        padding: .65rem 1rem;
+        border-radius: 9999px;
+        font-size: .875rem;
+        font-weight: 600;
+        line-height: 1.2;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: scale(.96);
+        }
+    }
+
+    .PaginationCtaIcon {
+        inline-size: .9rem;
+        block-size: .9rem;
+        flex: none;
+        margin-inline-start: .1rem;
+        stroke-width: 2.4;
+        transition: transform 180ms ease-out;
+    }
+
+    .PaginationCta:hover .PaginationCtaIcon {
+        transform: translateX(.15rem);
+    }
+
+    .PaginationCta--primary {
+        color: #111116;
+        background: var(--pagination-accent);
+    }
+
+    .PaginationCta--primary:hover {
+        background: color-mix(in oklch, var(--pagination-accent) 88%, var(--pagination-accent-text));
+    }
+
+    .PaginationCta--secondary {
+        color: white;
+        background: var(--pagination-primary);
+    }
+
+    .PaginationCta--secondary:hover {
+        background: color-mix(in oklch, var(--pagination-primary) 86%, black);
+    }
+
+    .PaginationAccentPrimary {
+        color: var(--pagination-primary-text);
+    }
+
+    [data-pagination-feature] .Terminal .btn-copy {
+        opacity: .3;
+        transition: opacity 150ms ease;
+    }
+
+    .PaginationDataFlow {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 4rem minmax(18rem, .72fr);
+        align-items: center;
+        gap: 2rem;
+        padding: clamp(2rem, 5vw, 4rem);
+        border-radius: .875rem;
+        background: var(--color-secondary-bg-subtle);
+    }
+
+    .PaginationDataSources {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-content: center;
+        gap: 1.5rem 2rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .PaginationDataSources li {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        min-inline-size: 0;
+        font-family: var(--font-title);
+        font-size: clamp(1rem, 1.5vw, 1.25rem);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .PaginationDataSources .Icon {
+        inline-size: 1.4rem;
+        block-size: 1.4rem;
+        flex: none;
+        color: var(--pagination-primary-text);
+        stroke-width: 1.8;
+    }
+
+    .PaginationDataArrow {
+        display: flex;
+        align-items: center;
+        color: var(--pagination-primary-text);
+    }
+
+    .PaginationDataArrow span {
+        block-size: 1px;
+        flex: 1;
+        background: currentColor;
+        opacity: .5;
+    }
+
+    .PaginationDataArrow .Icon {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        margin-inline-start: -.35rem;
+        stroke-width: 1.8;
+    }
+
+    .PaginationDataContract {
+        display: grid;
+        align-content: center;
+        justify-items: start;
+        min-inline-size: 0;
+        padding: .5rem 0 .5rem 2rem;
+        border-inline-start: 1px solid color-mix(in oklch, var(--color-body-text) 18%, transparent);
+    }
+
+    .PaginationDataContractIcon {
+        inline-size: 2rem;
+        block-size: 2rem;
+        margin-block-end: 1.25rem;
+        color: var(--pagination-primary-text);
+        fill: currentColor;
+    }
+
+    .PaginationDataContract > span {
+        margin-block-end: .5rem;
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--pagination-primary-text);
+    }
+
+    .PaginationDataContract code {
+        padding: 0;
+        color: var(--color-body-text);
+        background: none;
+        font-size: clamp(1.15rem, 2vw, 1.6rem);
+        font-weight: 700;
+    }
+
+    .PaginationDataContract p {
+        max-inline-size: 26rem;
+        margin: 1rem 0 0;
+        color: color-mix(in oklch, var(--color-body-text) 72%, transparent);
+        font-size: .9rem;
+        line-height: 1.6;
+    }
+
+    .PaginationStrategyGrid {
+        display: grid;
+        max-inline-size: 78rem;
+        margin-inline: auto;
+        overflow: hidden;
+        border-radius: .875rem;
+        background: var(--color-body-bg);
+    }
+
+    .PaginationStrategyCard {
+        display: grid;
+        grid-template-rows: auto auto auto 1fr;
+        min-inline-size: 0;
+        padding: clamp(1.75rem, 3vw, 2.75rem);
+    }
+
+    .PaginationStrategyTitle,
+    .PaginationThemeOption h3,
+    .PaginationProductionGrid h3 {
+        margin: 0;
+        font-family: var(--font-title);
+        font-size: clamp(1.5rem, 2.1vw, 1.85rem);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -.025em;
+        line-height: 1.08;
+        text-wrap: balance;
+    }
+
+    .PaginationStrategyTitle strong {
+        color: var(--pagination-accent-text);
+    }
+
+    .PaginationStrategyDescription {
+        margin: 1rem 0 0;
+        color: color-mix(in oklch, var(--color-body-text) 76%, transparent);
+        font-size: .95rem;
+        line-height: 1.65;
+        text-wrap: balance;
+    }
+
+    .PaginationWindowDiagram {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        min-block-size: 8rem;
+        align-items: center;
+        gap: .75rem;
+        margin-block: 1.5rem;
+    }
+
+    .PaginationWindowGroup {
+        position: relative;
+        min-inline-size: 0;
+    }
+
+    .PaginationWindowLabel,
+    .PaginationWindowDetail {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .PaginationWindowLabel {
+        color: color-mix(in oklch, var(--color-body-text) 54%, transparent);
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    .PaginationWindowDetail {
+        margin-block-start: .2rem;
+        color: var(--color-body-text);
+        font-size: .7rem;
+        font-weight: 600;
+    }
+
+    .PaginationWindowDots {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(.45rem, .65rem));
+        justify-content: start;
+        gap: clamp(.25rem, .7vw, .45rem);
+        margin-block-start: .85rem;
+    }
+
+    .PaginationWindowDot {
+        inline-size: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: color-mix(in oklch, var(--color-body-text) 12%, transparent);
+    }
+
+    .PaginationWindowDot--active {
+        background: var(--pagination-accent);
+    }
+
+    .PaginationWindowDot--peek {
+        background: transparent;
+        box-shadow: inset 0 0 0 2px var(--pagination-accent-text);
+    }
+
+    .PaginationWindowDot--empty {
+        border: 1px dashed color-mix(in oklch, var(--color-body-text) 22%, transparent);
+        background: transparent;
+    }
+
+    .PaginationWindowGroup--cursor::before {
+        position: absolute;
+        inset-block: -.45rem -.5rem;
+        inset-inline-start: -.45rem;
+        inline-size: 2px;
+        border-radius: 999px;
+        background: var(--pagination-accent-text);
+        content: "";
+    }
+
+    .PaginationStrategyFacts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-self: end;
+        gap: .75rem;
+        margin: 0;
+    }
+
+    .PaginationStrategyFacts div {
+        min-inline-size: 0;
+    }
+
+    .PaginationStrategyFacts dt {
+        color: color-mix(in oklch, var(--color-body-text) 58%, transparent);
+        font-size: .65rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        line-height: 1.35;
+        text-transform: uppercase;
+    }
+
+    .PaginationStrategyFacts dd {
+        margin: .35rem 0 0;
+        color: var(--color-body-text);
+        font-family: var(--font-title);
+        font-size: .9rem;
+        font-weight: var(--font-weight-bold);
+    }
+
+    .PaginationStrategyCall {
+        display: grid;
+        max-inline-size: 78rem;
+        margin: 1.25rem auto 0;
+        overflow: hidden;
+        border-radius: .75rem;
+        color: #e9e7ee;
+        background: #121416;
+    }
+
+    .PaginationStrategyCall > span,
+    .PaginationStrategyCall code {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        padding: 1rem 1.25rem;
+    }
+
+    .PaginationStrategyCall > span {
+        color: #aaa5b4;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .PaginationStrategyCall code {
+        color: #d7d4de;
+        background: transparent;
+        font-size: .72rem;
+        line-height: 1.45;
+        white-space: nowrap;
+    }
+
+    .PaginationStrategyCall strong {
+        margin-inline-end: .45rem;
+        color: var(--pagination-accent);
+        font-weight: 600;
+    }
+
+    .PaginationThemeGrid {
+        display: grid;
+        gap: 3rem;
+        max-inline-size: 82rem;
+        margin-inline: auto;
+    }
+
+    .PaginationThemeOption {
+        display: flex;
+        min-inline-size: 0;
+        flex-direction: column;
+    }
+
+    .PaginationThemeOption p {
+        margin: .75rem 0 0;
+        color: color-mix(in oklch, var(--color-body-text) 72%, transparent);
+        font-size: .9rem;
+        line-height: 1.6;
+        text-wrap: balance;
+    }
+
+    .PaginationThemePreview {
+        display: flex;
+        min-block-size: 11rem;
+        align-items: center;
+        justify-content: center;
+        gap: .35rem;
+        margin-block-start: 1.5rem;
+        border-radius: .75rem;
+        background: var(--color-secondary-bg-subtle);
+    }
+
+    .PaginationThemeControl {
+        display: grid;
+        min-inline-size: 1.9rem;
+        min-block-size: 1.9rem;
+        padding-inline: .5rem;
+        place-items: center;
+        color: color-mix(in oklch, var(--color-body-text) 74%, transparent);
+        font-size: .7rem;
+        font-weight: 600;
+    }
+
+    .PaginationThemeControl--current {
+        color: white;
+        background: var(--pagination-primary);
+    }
+
+    .PaginationThemePreview--default .PaginationThemeControl {
+        border-radius: .3rem;
+    }
+
+    .PaginationThemePreview--bootstrap .PaginationThemeControl {
+        border: 1px solid color-mix(in oklch, var(--pagination-primary) 35%, transparent);
+        color: var(--pagination-primary-text);
+        background: var(--color-body-bg);
+    }
+
+    .PaginationThemePreview--bootstrap .PaginationThemeControl--current {
+        color: white;
+        background: var(--pagination-primary);
+    }
+
+    .PaginationThemePreview--tailwind .PaginationThemeControl {
+        border-radius: 999px;
+        background: var(--color-body-bg);
+    }
+
+    .PaginationThemePreview--tailwind .PaginationThemeControl--current {
+        color: white;
+        background: var(--pagination-primary);
+    }
+
+    .PaginationThemeCode {
+        display: grid;
+        max-inline-size: 58rem;
+        align-items: center;
+        gap: 1.5rem;
+        margin: clamp(3rem, 6vw, 5rem) auto 0;
+    }
+
+    .PaginationThemeCode > p {
+        margin: 0;
+        color: color-mix(in oklch, var(--color-body-text) 76%, transparent);
+        font-family: var(--font-title);
+        font-size: 1.15rem;
+        font-weight: var(--font-weight-bold);
+        line-height: 1.35;
+        text-wrap: balance;
+    }
+
+    .PaginationThemeCode .Terminal_body {
+        font-size: .72rem;
+        line-height: 1.5;
+    }
+
+    .PaginationIntegrationSection {
+        background: color-mix(in oklch, var(--color-body-bg) 96%, black);
+    }
+
+    .dark .PaginationIntegrationSection {
+        background: #1b1e21;
+    }
+
+    .PaginationLiveLayout {
+        display: grid;
+        align-items: center;
+        gap: clamp(3rem, 6vw, 6rem);
+    }
+
+    .PaginationLivePreview {
+        display: block;
+        overflow: hidden;
+        margin: 0;
+        border-radius: .875rem;
+        color: var(--color-body-text);
+        background: var(--color-secondary-bg-subtle);
+    }
+
+    .PaginationLivePreview img {
+        display: block;
+        inline-size: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .PaginationLivePreview figcaption {
+        padding: 1rem 1.25rem;
+        font-size: .85rem;
+        font-weight: 700;
+    }
+
+    .PaginationLiveContent {
+        min-inline-size: 0;
+    }
+
+    .PaginationLiveIcon {
+        inline-size: 2.35rem;
+        block-size: 2.35rem;
+        margin-block-end: 1.75rem;
+        color: var(--pagination-primary-text);
+    }
+
+    .PaginationLiveContent > p {
+        max-inline-size: 35rem;
+        margin: 2rem 0;
+        color: color-mix(in oklch, var(--color-body-text) 80%, transparent);
+        font-size: 1.05rem;
+        line-height: 1.75;
+        text-wrap: balance;
+    }
+
+    .PaginationLiveContent > .Terminal {
+        max-inline-size: 36rem;
+    }
+
+    .PaginationLiveContent .Terminal_body {
+        font-size: .75rem;
+        line-height: 1.5;
+    }
+
+    .PaginationLiveContent > .PaginationCta {
+        margin-block-start: 1.5rem;
+    }
+
+    .PaginationProductionSection {
+        background: var(--color-secondary-bg-subtle);
+    }
+
+    .PaginationDemosSection {
+        background: color-mix(in oklch, var(--color-body-bg) 92%, var(--pagination-accent));
+    }
+
+    .dark .PaginationDemosSection {
+        background: color-mix(in oklch, var(--color-body-bg) 88%, var(--pagination-primary));
+    }
+
+    .PaginationProductionGrid {
+        display: grid;
+        max-inline-size: 78rem;
+        gap: 3rem;
+        margin-inline: auto;
+    }
+
+    .PaginationProductionGrid article {
+        display: flex;
+        min-inline-size: 0;
+        flex-direction: column;
+    }
+
+    .PaginationProductionGrid article > .Icon {
+        inline-size: 1.75rem;
+        block-size: 1.75rem;
+        margin-block-end: 1.5rem;
+        color: var(--pagination-primary-text);
+        stroke-width: 1.8;
+    }
+
+    .PaginationProductionGrid p {
+        margin: 1rem 0 1.5rem;
+        color: color-mix(in oklch, var(--color-body-text) 76%, transparent);
+        font-size: .95rem;
+        line-height: 1.65;
+        text-wrap: balance;
+    }
+
+    .PaginationProductionCode {
+        margin-block-start: auto;
+    }
+
+    .PaginationProductionCode .Terminal_body {
+        min-block-size: 11rem;
+        font-size: .68rem;
+        line-height: 1.55;
+    }
+
+    .PaginationProductionCode .Terminal_content {
+        padding: 1rem;
+        scrollbar-color: color-mix(in srgb, var(--pagination-accent) 28%, transparent) transparent;
+        scrollbar-width: thin;
+    }
+
+    .PaginationProductionCode .Terminal_content::-webkit-scrollbar {
+        inline-size: 4px;
+        block-size: 4px;
+    }
+
+    .PaginationProductionCode .Terminal_content::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .PaginationProductionCode .Terminal_content::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--pagination-accent) 28%, transparent);
+    }
+
+    .PaginationProductionCode .hl-attribute > .hl-type {
+        color: #ed8796;
+    }
+
+    .PaginationPreview {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        min-inline-size: 42rem;
+        gap: 2rem;
+    }
+
+    .PaginationPreviewPages {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .4rem;
+    }
+
+    .PaginationPreviewLink {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 2.5rem;
+        block-size: 2.5rem;
+        gap: .45rem;
+        padding-inline: .75rem;
+        border-radius: .45rem;
+        color: var(--color-body-text);
+        background: var(--color-secondary-bg-subtle);
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .PaginationPreviewLink--current {
+        color: white;
+        background: var(--pagination-primary);
+    }
+
+    @media (width >= 64rem) {
+        .PaginationStrategyGrid,
+        .PaginationThemeGrid,
+        .PaginationProductionGrid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .PaginationStrategyCard + .PaginationStrategyCard {
+            border-inline-start: 1px solid color-mix(in oklch, var(--color-body-text) 10%, transparent);
+        }
+
+        .PaginationStrategyCall {
+            grid-template-columns: auto repeat(3, minmax(0, 1fr));
+        }
+
+        .PaginationStrategyCall code + code {
+            border-inline-start: 1px solid rgb(255 255 255 / .1);
+        }
+
+        .PaginationThemeCode {
+            grid-template-columns: 14rem minmax(0, 1fr);
+        }
+
+        .PaginationLiveLayout {
+            grid-template-columns: minmax(0, 1.1fr) minmax(24rem, .9fr);
+        }
+
+        .PaginationProductionGrid article + article {
+            padding-inline-start: 3rem;
+            border-inline-start: 1px solid color-mix(in oklch, var(--color-body-text) 12%, transparent);
+        }
+    }
+
+    @media (width < 64rem) {
+        .PaginationDataFlow {
+            grid-template-columns: 1fr;
+        }
+
+        .PaginationDataArrow {
+            min-block-size: 3rem;
+            justify-content: center;
+            transform: rotate(90deg);
+        }
+
+        .PaginationDataArrow span {
+            max-inline-size: 3rem;
+            flex-basis: 3rem;
+        }
+
+        .PaginationDataContract {
+            padding: 1.5rem 0 0;
+            border-block-start: 1px solid color-mix(in oklch, var(--color-body-text) 18%, transparent);
+            border-inline-start: 0;
+        }
+
+        .PaginationStrategyCard + .PaginationStrategyCard {
+            border-block-start: 1px solid color-mix(in oklch, var(--color-body-text) 10%, transparent);
+        }
+
+        .PaginationStrategyCall > * + * {
+            border-block-start: 1px solid rgb(255 255 255 / .1);
+        }
+
+        .PaginationProductionGrid {
+            max-inline-size: 44rem;
+        }
+    }
+
+    @media (width < 40rem) {
+        .PaginationSectionHeading {
+            margin-block-end: 3rem;
+        }
+
+        .PaginationSectionHeading > p:last-child {
+            margin-block-start: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .PaginationDataFlow {
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .PaginationDataSources {
+            grid-template-columns: 1fr;
+            gap: 1.1rem;
+        }
+
+        .PaginationStrategyCard {
+            padding: 1.5rem;
+        }
+
+        .PaginationWindowDiagram {
+            min-block-size: 6rem;
+        }
+
+        .PaginationStrategyFacts {
+            gap: .5rem;
+        }
+
+        .PaginationStrategyFacts dt {
+            font-size: .58rem;
+        }
+
+        .PaginationStrategyCall code {
+            overflow-x: auto;
+        }
+
+        .PaginationThemeGrid {
+            gap: 2.5rem;
+        }
+
+        .PaginationThemePreview {
+            min-block-size: 9rem;
+            overflow-x: auto;
+            justify-content: flex-start;
+            padding-inline: 1.25rem;
+        }
+
+        .PaginationLiveContent > p {
+            font-size: 1rem;
+        }
+
+        .PaginationPreview {
+            min-inline-size: 0;
+            gap: .4rem;
+        }
+
+        .PaginationPreviewPages {
+            gap: .15rem;
+        }
+
+        .PaginationPreviewLink {
+            min-inline-size: 1.8rem;
+            block-size: 2rem;
+            padding-inline: .35rem;
+            font-size: .78rem;
+        }
+
+        .PaginationPreviewControlText {
+            display: none;
+        }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        [data-pagination-feature] .Terminal .btn-copy {
+            opacity: 0;
+        }
+
+        [data-pagination-feature] .Terminal:hover .btn-copy,
+        [data-pagination-feature] .Terminal:focus-within .btn-copy {
+            opacity: .75;
+        }
+    }
+}
+
+@layer utilities {
+    .PaginationCodeFlow {
+        display: grid;
+        gap: 6rem 5rem;
+    }
+
+    .PaginationCodeFlow .PaginationSourceArrow,
+    .PaginationCodeFlow .PaginationResultArrow {
+        position: absolute;
+        right: 1.5rem;
+        bottom: -5.25rem;
+        width: 3rem;
+        height: 4rem;
+        background-image: url(../images/arrow-2.png);
+        pointer-events: none;
+    }
+
+    .PaginationCodeResult {
+        margin-top: 6rem;
+    }
+
+    @media (min-width: 64rem) {
+        .PaginationCodeFlow {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding-top: 2rem;
+        }
+
+        .PaginationCodeFlow .PaginationSourceArrow {
+            top: -3.25rem;
+            right: -6.5rem;
+            bottom: auto;
+            width: 8rem;
+            height: 3rem;
+            background-image: url(../images/arrow.png);
+        }
+    }
+}

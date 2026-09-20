@@ -23,6 +23,8 @@ final class PackageHeader
 
     public string $eyebrowText = '';
 
+    public ?string $background = null;
+
     /**
      * Render with the chat bubble icon?
      */

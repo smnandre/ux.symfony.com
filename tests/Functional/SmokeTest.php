@@ -74,6 +74,16 @@ class SmokeTest extends KernelTestCase
         self::assertSame(1, $page->crawler()->filter('[aria-labelledby="homepage-ui-kits-title"] a[href$="/toolkit#kits"]')->count());
     }
 
+    public function testHomepageFeaturesPagination(): void
+    {
+        $page = $this->browser()
+            ->visit('/')
+            ->assertSuccessful()
+        ;
+
+        self::assertSame(1, $page->crawler()->filter('main h3 a[href$="/pagination"]')->count());
+    }
+
     #[DataProvider('providePackageUrls')]
     public function testPackagePages(UxPackage $package)
     {

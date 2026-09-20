@@ -1,7 +1,10 @@
+{% props demo, showTags = false %}
+
 <twig:Card
     name="{{ demo.name }}"
     description="{{ demo.description }}"
     image="{{ asset(demo.screenshotFilename) }}"
     url="{{ path(demo.route) }}"
     tags="{{ demo.tags }}"
+    :showTags="showTags"
 />
