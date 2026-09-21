@@ -1,6 +1,6 @@
 {% macro chapter(mode, icon, title, line) %}
     <button
-        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" class="uxc-chapter" data-mode="{{ mode }}"
+        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" aria-selected="{{ mode == 'find' ? 'true' : 'false' }}" tabindex="{{ mode == 'find' ? '0' : '-1' }}" class="uxc-chapter" data-mode="{{ mode }}"
         data-url="{{ path('app_demo_inspector', {page: mode}) }}"
         data-inspector-mockup-target="tab"
         data-action="inspector-mockup#select"
