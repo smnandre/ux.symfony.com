@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../../vendor/symfony/ux-pagination/assets/dist/style.min.css";
+@import "./components/_CursorPagination.css";
 
 @source "../../templates/**/*.html.twig";
 @source "../../vendor/symfony/ux-pagination/templates/**/*.html.twig";
