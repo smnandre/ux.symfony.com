@@ -2,12 +2,10 @@ import { Controller } from "@hotwired/stimulus";
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-  static targets = ["stage", "tab", "frame", "error", "shield", "interaction"];
+  static targets = ["stage", "tab", "frame", "error"];
   static values = { mode: { type: String, default: "find" } };
 
   connect() {
-    this.interactive = false;
-    this.syncInteraction();
     this.modes = this.tabTargets.map((tab) => tab.dataset.mode);
     this.lifetime = new AbortController();
     window.addEventListener("message", (event) => this.receive(event), {
@@ -75,12 +73,7 @@ export default class extends Controller {
       }
       this.stageTarget.setAttribute("aria-busy", "false");
       this.ready = true;
-      this.syncInteraction();
-      this.post(
-        this.interactive
-          ? { command: "interact" }
-          : { command: "play", paused: !this.visible || document.hidden },
-      );
+      this.post({ command: "play", paused: !this.visible || document.hidden });
     }
     if (typeof data.progress === "number")
       this.element.style.setProperty("--progress", String(data.progress));
@@ -200,26 +193,8 @@ export default class extends Controller {
   }
 
   playback() {
-    if (this.ready && !this.interactive)
+    if (this.ready)
       this.post({ command: this.visible && !document.hidden ? "resume" : "pause" });
-  }
-
-  toggleInteraction() {
-    this.interactive = !this.interactive;
-    this.syncInteraction();
-    if (this.interactive) {
-      if (this.ready) this.post({ command: "interact" });
-    } else this.load();
-  }
-
-  syncInteraction() {
-    this.shieldTarget.hidden = this.interactive;
-    this.frameTarget.inert = !this.interactive;
-    this.frameTarget.tabIndex = this.interactive ? 0 : -1;
-    this.interactionTarget.setAttribute("aria-pressed", String(!this.interactive));
-    this.interactionTarget.title = this.interactive
-      ? "Lock and restart demo"
-      : "Unlock to try the demo";
   }
 
   fit() {

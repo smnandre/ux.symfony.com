@@ -54,6 +54,7 @@ function fixture(automatic = true) {
   driver.wakeups = new Set();
   driver.element = { isConnected: true };
   driver.ready = true;
+  driver.stopped = false;
   driver.pausedDuration = 0;
   driver.pausedAt = null;
   driver.setPaused(false);
@@ -155,6 +156,14 @@ test("taking manual control stops typing before the next character", async () =>
   });
   await assert.rejects(driver.type(input, "cart"), { name: "AbortError" });
   assert.equal(input.value, "c");
+});
+
+test("only trusted user input stops playback", () => {
+  const { driver } = fixture();
+  driver.takeControl({ isTrusted: false });
+  assert.equal(driver.stopped, false);
+  driver.takeControl({ isTrusted: true });
+  assert.equal(driver.stopped, true);
 });
 
 test("click ripples enter the browser top layer before the target action runs", () => {

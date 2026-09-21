@@ -97,13 +97,6 @@ function fixture(reducedMotion = true) {
   });
   host.stageTarget = stage;
   host.errorTarget = { hidden: true };
-  host.shieldTarget = { hidden: false };
-  host.interactionTarget = {
-    attributes: {},
-    setAttribute(name, value) {
-      this.attributes[name] = value;
-    },
-  };
   host.element = { style: { setProperty() {} } };
   host.modeValue = "find";
   host.tabTargets = ["find", "inspect", "connect", "trace"].map((mode) => ({
@@ -231,47 +224,6 @@ test("scripted Inspector scrolling stays inside the iframe and restores the nati
   view.parent = view;
   context.withDemoScrolling(() => new Element().scrollIntoView(true), view);
   assert.equal(calls[1], true);
-});
-
-test("interactive mode unlocks pointer and keyboard access and cannot resume on visibility changes", () => {
-  const { host, reply } = fixture();
-  reply(host.pendingFrame, { ready: true });
-  const frame = host.frameTarget;
-  assert.equal(host.interactionTarget.attributes["aria-pressed"], "true");
-  assert.equal(host.interactionTarget.title, "Unlock to try the demo");
-  host.toggleInteraction();
-  assert.equal(host.shieldTarget.hidden, true);
-  assert.equal(frame.inert, false);
-  assert.equal(frame.tabIndex, 0);
-  assert.equal(host.interactionTarget.attributes["aria-pressed"], "false");
-  assert.equal(host.interactionTarget.title, "Lock and restart demo");
-  assert.equal(frame.messages.at(-1).command, "interact");
-  const count = frame.messages.length;
-  host.playback();
-  assert.equal(frame.messages.length, count);
-  host.toggleInteraction();
-  assert.equal(host.shieldTarget.hidden, false);
-  assert.equal(frame.inert, true);
-  assert.equal(frame.tabIndex, -1);
-  assert.equal(host.interactionTarget.attributes["aria-pressed"], "true");
-  assert.equal(host.interactionTarget.title, "Unlock to try the demo");
-  assert.ok(host.pendingFrame);
-  reply(host.pendingFrame, { ready: true });
-  assert.equal(host.frameTarget.messages.at(-1).command, "play");
-});
-
-test("interactive mode selected during loading also applies to later scenario frames", () => {
-  const { host, reply } = fixture();
-  host.toggleInteraction();
-  reply(host.pendingFrame, { ready: true });
-  assert.equal(host.frameTarget.messages.at(-1).command, "interact");
-  assert.equal(host.frameTarget.inert, false);
-  host.modeValue = "inspect";
-  host.load();
-  reply(host.pendingFrame, { ready: true });
-  assert.equal(host.frameTarget.inert, false);
-  assert.equal(host.frameTarget.tabIndex, 0);
-  assert.equal(host.frameTarget.messages.at(-1).command, "interact");
 });
 
 test("crossfades a prepared scenario over the previous document and releases it when finished", async () => {

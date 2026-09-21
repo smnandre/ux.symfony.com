@@ -22,6 +22,12 @@ export default class extends Controller {
     this.pausedDuration = 0;
     this.pausedAt = null;
     this.setPaused(window.parent !== window);
+    for (const type of ["pointerdown", "keydown", "input"]) {
+      document.addEventListener(type, (event) => this.takeControl(event), {
+        capture: true,
+        signal: this.lifetime.signal,
+      });
+    }
     window.addEventListener(
       "message",
       (event) => {
@@ -35,7 +41,7 @@ export default class extends Controller {
         if (event.data.command === "play") {
           this.setPaused(Boolean(event.data.paused));
           this.play();
-        } else if (event.data.command === "interact" || event.data.command === "stop") this.stop();
+        } else if (event.data.command === "stop") this.stop();
         else if (event.data.command === "pause") this.setPaused(true);
         else if (event.data.command === "resume") this.setPaused(false);
         else if (event.data.command === "ready" && this.ready) this.post({ ready: true });
@@ -57,6 +63,10 @@ export default class extends Controller {
     clearTimeout(this.pointerTimer);
     this.pointer?.remove();
     this.shortcut?.remove();
+  }
+
+  takeControl(event) {
+    if (event.isTrusted) this.stop();
   }
 
   async prepare() {
