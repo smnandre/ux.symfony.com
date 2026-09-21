@@ -1,24 +1,5 @@
 {% extends 'ux_packages/package.html.twig' %}
 
-{# The Icons page does the same: the repository keeps the bare name, the page
-   presents it as a UX package. #}
-{% set meta = {
-    title: 'UX Inspector - ' ~ package.tagline,
-    description: package.description,
-    canonical: url(package.route),
-    social: {
-        title: package.tagline ~ ' - Symfony UX Inspector',
-        description: package.description|striptags,
-        image: {
-            url: absolute_url(asset(package.getSocialImage('1200x675'))),
-            type: 'image/png',
-            width: 1200,
-            height: 675,
-            alt: 'UX Inspector - Component Icon',
-        },
-    },
-} %}
-
 {% macro package(pkg, items) %}
     <article class="ux-pk__card" style="--color: {{ pkg.color }}">
         <a href="{{ url(pkg.route) }}" class="ux-pk__link">
@@ -131,7 +112,6 @@
         }
     </style>
 
-    {# --------------------------------------------------- what it reads, per package #}
     <section class="bg-subtle py-16 md:pt-16 md:pb-24">
         <div class="max-w-[1400px] mx-auto px-6 md:px-12">
             <h2 class="ubuntu text-center ux-pk__head">
@@ -173,7 +153,6 @@
         </div>
     </section>
 
-    {# ------------------------------------------------------------------------ install #}
     <section class="ux-install py-16 md:py-20">
         <div class="max-w-[1400px] mx-auto px-6 md:px-12">
             <div class="ux-install__grid">
