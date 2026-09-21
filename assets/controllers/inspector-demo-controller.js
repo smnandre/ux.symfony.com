@@ -64,6 +64,7 @@ export default class extends Controller {
 
   stop() {
     this.stopped = true;
+    this.element.dataset.playbackStopped = "true";
     this.setPaused(true);
     this.clock.wake();
     clearTimeout(this.pointerTimer);

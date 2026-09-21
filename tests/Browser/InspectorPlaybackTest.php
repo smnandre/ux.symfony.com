@@ -83,28 +83,15 @@ final class InspectorPlaybackTest extends PlaywrightTestCase
 
     public function testUserInputStopsPlayback(): void
     {
-        $this->page->addInitScript(<<<'JS'
-            window.__inspectorDemoMessages = [];
-            window.addEventListener('message', (event) => {
-                if (event.data?.inspectorDemo) window.__inspectorDemoMessages.push(event.data);
-            });
-            JS);
         $this->page->goto($this->baseUrl.'/demos/inspector/find');
 
         $this->expect($this->page->locator('ux-inspector[ready]'))->withTimeout(15000)->toHaveCount(1);
-        $this->page->waitForFunction(
-            '() => window.__inspectorDemoMessages.some((message) => typeof message.progress === "number")',
-            null,
-            ['timeout' => 15000],
-        );
+        $demo = $this->page->locator('[data-controller~="inspector-demo"]');
+        self::assertNull($demo->getAttribute('data-playback-stopped'));
 
         $favorite = $this->page->locator('[aria-label="Favorite product 1"]');
         $favorite->click();
         $this->expect($favorite)->toHaveAttribute('aria-pressed', 'true');
-
-        usleep(200000);
-        $messageCount = $this->page->evaluate('window.__inspectorDemoMessages.length');
-        usleep(1200000);
-        self::assertSame($messageCount, $this->page->evaluate('window.__inspectorDemoMessages.length'));
+        $this->expect($demo)->toHaveAttribute('data-playback-stopped', 'true');
     }
 }

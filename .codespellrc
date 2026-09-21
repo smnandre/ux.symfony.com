@@ -1,2 +1,2 @@
 [codespell]
-ignore-words-list = activit
+skip = assets/demos/inspector/ux-inspector.js

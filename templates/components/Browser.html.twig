@@ -11,8 +11,10 @@
                 <span class="size-3 rounded-[50%] shadow-sm bg-[#F2CA44]"></span>
                 {%- if zoomAction -%}
                     {# the green dot does what a green dot does, when a page asks for it #}
-                    <button type="button" class="browser-zoom size-3 rounded-[50%] shadow-sm bg-[#65C466] border-0 p-0 cursor-pointer"
-                            aria-label="Toggle full screen" data-action="{{ zoomAction }}"></button>
+                    <button type="button" class="browser-zoom -m-1.5 grid size-6 cursor-pointer place-items-center rounded-[50%] border-0 bg-transparent p-0"
+                            aria-label="Toggle full screen" data-action="{{ zoomAction }}">
+                        <span class="size-3 rounded-[50%] bg-[#65C466] shadow-sm"></span>
+                    </button>
                 {%- else -%}
                     <span class="size-3 rounded-[50%] shadow-sm bg-[#65C466]"></span>
                 {%- endif -%}
