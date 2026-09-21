@@ -1,0 +1,92 @@
+{% extends 'demos/pagination/demo.html.twig' %}
+
+{% block demo_container %}
+    <div class="PaginationDemoShell max-w-[1140px] mx-auto mb-12">
+        <twig:Browser
+            class="PaginationDemoBrowser PaginationThemesBrowser shadow-blur shadow-blur--rainbow w-full"
+            frameClass="aspect-video"
+        >
+            <div class="PaginationThemes">
+                <div class="PaginationThemes_examples">
+                    <section class="PaginationThemes_example" aria-labelledby="pagination-theme-default">
+                        <div class="PaginationThemes_label">
+                            <p>Bundle CSS</p>
+                            <h3 id="pagination-theme-default">Default</h3>
+                        </div>
+                        <div class="PaginationThemes_result">
+                            {{ ux_pagination(pagination, show_info: false) }}
+                        </div>
+                    </section>
+
+                    <section class="PaginationThemes_example PaginationThemes_example--tailwind" aria-labelledby="pagination-theme-tailwind">
+                        <div class="PaginationThemes_label">
+                            <p>Utility classes</p>
+                            <h3 id="pagination-theme-tailwind">Tailwind</h3>
+                        </div>
+                        <div class="PaginationThemes_result">
+                            {{ ux_pagination(
+                                pagination,
+                                theme: '@UXPagination/theme/tailwind.html.twig',
+                                show_info: false,
+                            ) }}
+                        </div>
+                    </section>
+
+                    <section class="PaginationThemes_example PaginationThemes_example--application" aria-labelledby="pagination-theme-application">
+                        <div class="PaginationThemes_label">
+                            <p>Two block overrides</p>
+                            <h3 id="pagination-theme-application">Application</h3>
+                        </div>
+                        <div class="PaginationThemes_result">
+                            {{ ux_pagination(
+                                pagination,
+                                theme: 'pagination/application.html.twig',
+                                show_info: false,
+                                attributes: {class: 'AppPagination'},
+                            ) }}
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </twig:Browser>
+    </div>
+
+    <section class="py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <twig:Code:CodeWithExplanationRow
+                filename="templates/demos/pagination/themes.html.twig"
+                targetTwigBlock="complete_theme_example"
+                sticky
+            >
+## Choose a complete theme
+
+Pass a theme template to `ux_pagination()`. The Tailwind theme changes the
+generated markup and utility classes, while the pagination result and its URLs
+remain exactly the same.
+
+Theme names come from application code, not from untrusted request values.
+            </twig:Code:CodeWithExplanationRow>
+
+            <twig:Code:CodeWithExplanationRow
+                filename="templates/pagination/application.html.twig"
+                reversed
+                sticky
+            >
+## Override only what changes
+
+An application theme can extend a built-in theme and replace a focused Twig
+block. Here, `previous_label` and `next_label` produce the **Back** and
+**Continue** labels visible in the third row.
+
+Everything else keeps the default accessible markup and behavior.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+{% endblock %}
+{% block complete_theme_example %}
+{{ ux_pagination(
+    pagination,
+    theme: '@UXPagination/theme/tailwind.html.twig',
+    show_info: false,
+) }}
+{% endblock %}

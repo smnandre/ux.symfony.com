@@ -13,15 +13,10 @@ parameters:
         - src/
         - tests/
     excludePaths:
-        - config/reference.php 
+        - config/reference.php
 
     doctrine:
         objectManagerLoader: tools/phpstan/object-manager.php
-
-    ignoreErrors:
-        - message: '#Method .+::test.+\(\) has no return type specified\.#'
-          paths:
-            - tests/
 
 rules:
     # LiveComponent rules
@@ -29,7 +24,7 @@ rules:
     - Kocal\PHPStanSymfonyUX\Rules\LiveComponent\LiveListenerMethodsVisibilityRule
     - Kocal\PHPStanSymfonyUX\Rules\LiveComponent\LivePropHydrationMethodsRule
     - Kocal\PHPStanSymfonyUX\Rules\LiveComponent\LivePropModifierMethodRule
-    
+
     # TwigComponent rules
     - Kocal\PHPStanSymfonyUX\Rules\TwigComponent\ClassMustBeFinalRule
     - Kocal\PHPStanSymfonyUX\Rules\TwigComponent\ClassNameMustNotEndWithComponentRule

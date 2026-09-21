@@ -1,0 +1,204 @@
+@layer components {
+    .PaginationDemoShell {
+        padding-inline: clamp(.75rem, 3vw, 2rem);
+    }
+
+    .PaginationDemoBrowser {
+        --demo-bg: #1f2225;
+        --demo-panel: #17191b;
+        --demo-card: #292d31;
+        --demo-line: rgb(255 255 255 / 9%);
+        --demo-muted: #95989d;
+        --demo-ink: #f4f1f5;
+        --demo-accent: var(--pagination-accent);
+
+        color: var(--demo-ink);
+
+        > div > :last-child {
+            background: var(--demo-bg);
+        }
+    }
+
+    .PaginationThemesBrowser {
+        > div > :last-child {
+            min-block-size: 38rem;
+        }
+    }
+
+    .PaginationThemes {
+        block-size: 100%;
+        min-block-size: 100%;
+        background: #f0efeb;
+
+        .PaginationThemes_label p {
+            margin: 0;
+            color: var(--pagination-primary-text);
+            font-family: var(--font-mono);
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .PaginationThemes_examples {
+            display: grid;
+            block-size: 100%;
+            min-block-size: 100%;
+            grid-template-rows: repeat(3, minmax(0, 1fr));
+        }
+
+        .PaginationThemes_example {
+            display: grid;
+            min-block-size: 0;
+            grid-template-columns: minmax(9rem, 24%) minmax(0, 1fr);
+            align-items: center;
+            gap: clamp(1rem, 3vw, 2.5rem);
+            padding: 1.3rem clamp(1.25rem, 4vw, 3.25rem);
+            background: #f0efeb;
+
+            + .PaginationThemes_example {
+                border-block-start: 1px solid rgb(36 34 41 / 10%);
+            }
+
+            &--tailwind {
+                background: #f7f6f2;
+            }
+
+            &--application {
+                background: #efedf8;
+            }
+        }
+
+        .PaginationThemes_label {
+            h3 {
+                margin: .3rem 0 0;
+                color: #242229;
+                font-family: var(--font-title);
+                font-size: clamp(1.15rem, 2vw, 1.5rem);
+                font-weight: 700;
+                letter-spacing: -.02em;
+            }
+        }
+
+        .PaginationThemes_result {
+            min-inline-size: 0;
+
+            nav,
+            ul {
+                margin: 0;
+            }
+
+            nav > ul {
+                justify-content: flex-start;
+            }
+        }
+
+        .AppPagination {
+            --ux-pagination-color: #302d39;
+            --ux-pagination-muted-color: #716b7b;
+            --ux-pagination-border-color: transparent;
+            --ux-pagination-background: rgb(255 255 255 / 72%);
+            --ux-pagination-active-background: var(--pagination-primary);
+            --ux-pagination-active-color: white;
+            --ux-pagination-focus-color: var(--pagination-primary);
+
+            .ux-pagination__list {
+                gap: .55rem;
+            }
+
+            .ux-pagination__link {
+                min-inline-size: 2.5rem;
+                border-radius: 999px;
+            }
+        }
+    }
+
+    .dark .PaginationThemes {
+        background: var(--demo-bg);
+
+        .PaginationThemes_example {
+            border-color: var(--demo-line);
+            background: var(--demo-bg);
+        }
+
+        .PaginationThemes_example--tailwind {
+            background: color-mix(in oklch, var(--demo-card) 36%, var(--demo-bg));
+        }
+
+        .PaginationThemes_example--application {
+            background: color-mix(in oklch, var(--pagination-primary) 12%, var(--demo-panel));
+        }
+
+        .PaginationThemes_label h3 {
+            color: var(--demo-ink);
+        }
+
+        .PaginationThemes_label p {
+            color: var(--demo-accent);
+        }
+
+        .PaginationThemes_example--tailwind {
+            .text-gray-700,
+            .dark\:text-gray-300 {
+                color: #e5e7eb;
+            }
+
+            .bg-white,
+            .dark\:bg-gray-800 {
+                background: #292d31;
+            }
+
+            .border-gray-300,
+            .dark\:border-gray-600 {
+                border-color: rgb(255 255 255 / 14%);
+            }
+
+            .bg-blue-600,
+            .dark\:bg-blue-500 {
+                color: #111827;
+                background: #f0a38a;
+            }
+        }
+
+        .AppPagination {
+            --ux-pagination-color: #f7efff;
+            --ux-pagination-muted-color: #9d95a8;
+            --ux-pagination-border-color: transparent;
+            --ux-pagination-background: rgb(255 255 255 / 7%);
+            --ux-pagination-active-background: var(--pagination-accent);
+            --ux-pagination-active-color: #292443;
+            --ux-pagination-focus-color: #f0a38a;
+        }
+    }
+    @media (max-width: 899px) {
+        .PaginationDemoBrowser > div > :last-child {
+            aspect-ratio: auto;
+            min-block-size: 36rem;
+        }
+        .PaginationThemesBrowser > div > :last-child {
+            min-block-size: 42rem;
+        }
+    }
+
+    @media (max-width: 479px) {
+        .PaginationDemoShell {
+            padding-inline: .5rem;
+        }
+        .PaginationThemes {
+            .PaginationThemes_example {
+                min-block-size: 0;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1rem;
+                padding-inline: 1rem;
+            }
+
+            .PaginationThemes_result {
+                overflow: visible;
+            }
+        }
+
+        .PaginationThemesBrowser > div > :last-child {
+            min-block-size: 51rem;
+        }
+    }
+}

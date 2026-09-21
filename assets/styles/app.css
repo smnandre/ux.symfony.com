@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "../../vendor/symfony/ux-pagination/assets/dist/style.min.css";
-@import "./components/_CursorPagination.css";
 
 @source "../../templates/**/*.html.twig";
 @source "../../vendor/symfony/ux-pagination/templates/**/*.html.twig";
@@ -137,6 +136,8 @@
 @import "./components/_Terminal.css";
 @import "./components/_PaginationLanding.css";
 @import "./components/_LivePagination.css";
+@import "./components/_CursorPagination.css";
+@import "./components/_PaginationThemes.css";
 @import "./components/_ToolkitPreview.css";
 @import "./components/_Wysiwyg.css";
 @import "./components/_CodeDescription.css";

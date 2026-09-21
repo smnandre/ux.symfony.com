@@ -56,6 +56,7 @@ final class SitemapController extends AbstractController
         yield $this->generateAbsoluteUrl('app_demo_pagination');
         yield $this->generateAbsoluteUrl('app_demo_pagination_live');
         yield $this->generateAbsoluteUrl('app_demo_pagination_cursor');
+        yield $this->generateAbsoluteUrl('app_demo_pagination_themes');
         yield $this->generateAbsoluteUrl('app_cookbook');
         yield $this->generateAbsoluteUrl('app_documentation');
         yield $this->generateAbsoluteUrl('app_changelog');
