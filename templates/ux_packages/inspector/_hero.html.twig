@@ -1,16 +1,16 @@
 {% macro chapter(mode, icon, title, line) %}
     <button
-        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" aria-selected="{{ mode == 'find' ? 'true' : 'false' }}" tabindex="{{ mode == 'find' ? '0' : '-1' }}" class="uxc-chapter{{ mode == 'find' ? ' is-current' }}" data-mode="{{ mode }}"
+        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" aria-selected="{{ mode == 'find' ? 'true' : 'false' }}" tabindex="{{ mode == 'find' ? '0' : '-1' }}" class="uxc-chapter group m-0 grid min-h-[120px] content-center gap-0 border-0 border-l border-[#dee2e6] bg-transparent px-6 pt-[1.1rem] pb-5 text-left text-[#495057] transition-colors duration-150 first:border-l-0 aria-selected:bg-[#e4e7eb] aria-selected:text-[#1c2024] motion-reduce:transition-none dark:border-[#343a40] dark:text-[#adb5bd] dark:aria-selected:bg-[#121519] dark:aria-selected:text-[#f1f3f5]{{ mode == 'find' ? ' is-current' }}" data-mode="{{ mode }}"
         data-url="{{ path('app_demo_inspector', {page: mode}) }}"
         data-inspector-mockup-target="tab"
         data-action="inspector-mockup#select"
         data-inspector-mockup-mode-param="{{ mode }}"
     >
-        <span class="uxc-chapter__head ubuntu">
-            <twig:ux:icon name="lucide:{{ icon }}" class="uxc-chapter__icon **:stroke-1"/>
+        <span class="uxc-chapter__head ubuntu flex items-center gap-[.6rem] text-[1.1rem] font-bold">
+            <twig:ux:icon name="lucide:{{ icon }}" class="uxc-chapter__icon size-[1.45rem] shrink-0 opacity-[.45] group-aria-selected:scale-[1.15] group-aria-selected:opacity-100 **:stroke-1"/>
             {{ title }}
         </span>
-        <span class="uxc-chapter__reveal"><span class="uxc-chapter__line text-balance">{{ line }}</span></span>
+        <span class="uxc-chapter__reveal hidden group-aria-selected:block"><span class="uxc-chapter__line block min-h-0 overflow-hidden pt-0 text-[.82rem] leading-[1.4] opacity-75 group-aria-selected:pt-2 text-balance">{{ line }}</span></span>
     </button>
 {% endmacro %}
 
@@ -22,136 +22,41 @@
     baseUrl: initial_demo_url,
 }, false) %}
 
-<style>
-    /* The site toggles themes with a class and declares no color-scheme, so
-       light-dark() would always resolve to its light half. Scope it here. */
-    .uxc { color-scheme: light; --w: 1150; --h: 700; --uxc-line: light-dark(#dee2e6, #343a40); }
-    .dark .uxc { color-scheme: dark; }
-
-    .uxc-top { max-width: 1400px; margin-inline: auto; padding-inline: 1.5rem; }
-    @media (min-width: 768px) { .uxc-top { padding-inline: 3rem; } }
-
-    /* The frame is cut off at the bottom: no rounding, no border, no shadow
-       there. The chapter bar below takes over, edge to edge. */
-    .uxc-frame > div {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        border-bottom: 0;
-    }
-
-    /* A hairline shadow under the window bar, above the page inside the frame,
-       so the chrome reads as chrome and not as part of the page. */
-    .uxc-frame .browser-chrome { min-height: 44px; padding-block: 0; box-shadow: 0 6px 10px -6px rgb(0 0 0 / .55); }
-    .uxc-frame .browser-chrome > :last-child { justify-self: end; }
-    .uxc-title {
-        display: block; text-align: center; white-space: nowrap;
-        font-size: .625rem; font-weight: 300; font-stretch: semi-condensed; letter-spacing: .24em;
-        color: #8b8e93; text-shadow: 0 1px 0 rgb(255 255 255 / .1), 0 -1px 1px rgb(0 0 0 / .9);
-    }
-    .uxc-stage {
-        position: relative; width: 100%; overflow: hidden;
-        aspect-ratio: var(--w) / var(--h);
-    }
-    /* The iframe renders at a real desktop width, then gets scaled to fit. */
-    .uxc-stage iframe {
-        position: absolute; top: 0; left: 0; border: 0; transform-origin: top left;
-        width: calc(var(--w) * 1px); height: calc(var(--h) * 1px);
-    }
-
-    .uxc-error { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; background: #212529; color: #f1f3f5; }
-    .uxc-error[hidden] { display: none; }
-    .uxc-error button { padding: .6rem 1rem; border: 1px solid #eb72af; border-radius: .4rem; color: inherit; cursor: pointer; }
-    /* A full width band: it rides over the bottom of the browser so the frame is
-       cut, and hides the halo behind it. The ground matches the next section. */
-    .uxc-cut {
-        position: relative; z-index: 1;
-        margin-top: 0;
-    }
-    /* Only the middle is tinted, on the browser's own width, closing the frame. */
-    .uxc-chapters {
-        position: relative; display: grid; grid-template-columns: repeat(2, 1fr);
-        border: 1px solid var(--uxc-line); border-top: 0;
-        border-radius: 0 0 .75rem .75rem;
-        background: light-dark(#f1f3f5, #16191d);
-        overflow: hidden;
-    }
-    @media (min-width: 768px) { .uxc-chapters { grid-template-columns: repeat(4, 1fr); } }
-
-    .uxc-chapter {
-        display: grid; gap: 0; align-content: center; min-height: 120px;
-        padding: 1.1rem 1.5rem 1.25rem;
-        border: 0; margin: 0;
-        background: transparent; text-align: left;
-        color: light-dark(#495057, #adb5bd);
-        transition: background-color .15s ease, color .15s ease;
-    }
-    .uxc-chapter + .uxc-chapter { box-shadow: inset 1px 0 var(--uxc-line); }
-    .uxc-chapter.is-current {
-        background: light-dark(#e4e7eb, #121519);
-        color: light-dark(#1c2024, #f1f3f5);
-    }
-    .uxc-chapter__head { display: flex; align-items: center; gap: .6rem; font-size: 1.1rem; font-weight: 700; }
-    .uxc-chapter__icon {
-        height: 1.45rem; width: 1.45rem; flex: 0 0 auto; opacity: .45;
-    }
-    .uxc-chapter.is-current .uxc-chapter__icon { opacity: 1; scale: 1.15; }
-    .uxc-chapters::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: #eb72af; transform: scaleX(var(--progress, 0)); transform-origin: left; transition: transform .12s linear; z-index: 2; }
-    .uxc[data-progress-reset] .uxc-chapters::before { transition: none; }
-    .uxc-chapter__reveal { display: none; }
-    .uxc-chapter.is-current .uxc-chapter__reveal { display: block; }
-    .uxc-chapter__line { min-height: 0; overflow: hidden; font-size: .82rem; line-height: 1.4; opacity: .75; padding-top: 0; }
-    .uxc-chapter.is-current .uxc-chapter__line { padding-top: .5rem; }
-    @media (prefers-reduced-motion: reduce) { .uxc-chapter { transition: none; } }
-
-    /* Full screen keeps the chapters: the whole shell goes, not just the frame. */
-    .uxc-shell:fullscreen {
-        display: grid; align-content: center;
-        padding-block: 2vmin;
-        background: light-dark(#e9ecef, #0d1117);
-    }
-    /* An explicit width, not a max-width: the shell is a grid here, and the
-       auto inline margins stop the item from stretching to the track. */
-    .uxc-shell:fullscreen .uxc-top {
-        width: min(96vw, calc(78vh * var(--w) / var(--h)));
-        max-width: none;
-        padding-inline: 0;
-    }
-</style>
-
-<div class="uxc mt-12 md:mt-16"
+<div class="uxc mt-12 [--h:700] [--w:1150] md:mt-16"
      data-controller="inspector-mockup"
      data-inspector-mockup-mode-value="find">
 
     <div class="uxc-shell">
-        <div class="uxc-top">
+        <div class="uxc-top mx-auto max-w-[1400px] px-6 md:px-12">
             <twig:Browser
-                class="uxc-frame ux-hero-glow shadow-blur shadow-blur--rainbow w-full"
+                class="uxc-frame shadow-blur shadow-blur--rainbow w-full [&>div]:rounded-b-none [&>div]:border-b-0 [&_.browser-chrome]:min-h-11 [&_.browser-chrome]:py-0 [&_.browser-chrome]:shadow-[0_6px_10px_-6px_rgb(0_0_0/.55)] [&_.browser-chrome>div:last-child]:justify-self-end"
                 frameClass=""
                 url="{{ null }}"
                 zoomAction="inspector-mockup#zoom"
             >
                 <twig:block name="chrome_title">
-                    <span class="uxc-title">UX INSPECTOR</span>
+                    <span class="uxc-title block whitespace-nowrap text-center text-[.625rem] font-light tracking-[.24em] text-[#8b8e93] [font-stretch:semi-condensed] [text-shadow:0_1px_0_rgb(255_255_255/.1),0_-1px_1px_rgb(0_0_0/.9)]">UX INSPECTOR</span>
                 </twig:block>
-                <div class="uxc-stage" id="inspector-stage" role="tabpanel" aria-labelledby="inspector-chapter-find" aria-busy="true" data-inspector-mockup-target="stage" data-mode="find">
+                <div class="uxc-stage relative aspect-[var(--w)/var(--h)] w-full overflow-hidden" id="inspector-stage" role="tabpanel" aria-labelledby="inspector-chapter-find" aria-busy="true" data-inspector-mockup-target="stage" data-mode="find">
                     <iframe
+                        class="absolute top-0 left-0 h-[calc(var(--h)*1px)] w-[calc(var(--w)*1px)] origin-top-left border-0"
                         title="The UX Inspector running on a page"
                         srcdoc="{{ initial_demo_html|e('html_attr') }}"
                         loading="eager"
                         data-run="initial"
                         data-inspector-mockup-target="frame"
                     ></iframe>
-                    <div class="uxc-error" data-inspector-mockup-target="error" role="alert" hidden>
+                    <div class="uxc-error absolute inset-0 z-3 flex flex-col items-center justify-center gap-4 bg-[#212529] text-[#f1f3f5] [&[hidden]]:hidden" data-inspector-mockup-target="error" role="alert" hidden>
                         <p>The demo could not load.</p>
-                        <button type="button" data-action="inspector-mockup#replay">Replay scenario</button>
+                        <button type="button" class="cursor-pointer rounded-[.4rem] border border-[#eb72af] px-4 py-[.6rem] text-inherit" data-action="inspector-mockup#replay">Replay scenario</button>
                     </div>
                 </div>
             </twig:Browser>
         </div>
 
-        <div class="uxc-cut bg-body">
-            <div class="uxc-top">
-                <div class="uxc-chapters" role="tablist" aria-label="Inspector views"
+        <div class="uxc-cut relative z-1 bg-body">
+            <div class="uxc-top mx-auto max-w-[1400px] px-6 md:px-12">
+                <div class="uxc-chapters relative grid grid-cols-2 overflow-hidden rounded-b-xl border border-t-0 border-[#dee2e6] bg-[#f1f3f5] before:absolute before:inset-x-0 before:top-0 before:z-2 before:h-[3px] before:origin-left before:scale-x-[var(--progress,0)] before:bg-[#eb72af] before:transition-transform before:duration-[120ms] before:content-[''] md:grid-cols-4 dark:border-[#343a40] dark:bg-[#16191d]" role="tablist" aria-label="Inspector views"
                      data-action="keydown->inspector-mockup#move">
                     {{ ph.chapter('find', 'layers', 'Find', 'Every Stimulus, Live and Turbo element, outlined in the page.') }}
                     {{ ph.chapter('inspect', 'mouse-pointer-click', 'Inspect', 'Values and props, read from the running instance.') }}
