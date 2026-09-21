@@ -1,0 +1,118 @@
+{% set pagination = this.pagination %}
+{% set filters = this.filters %}
+{% set stories = {
+    1: pagination.totalItems ~ ' jerseys are ready. Choose a color or pattern, then move through the collection.',
+    2: 'The page changed without a full reload. The URL changed with it.',
+    3: 'Every control is still a real link, so keyboard navigation and browser history keep working.',
+    4: 'Filters and pagination share the same URL. This exact selection can be bookmarked.',
+    5: 'The component asks for only 10 jerseys, then renders the new slice in place.',
+    6: 'ComponentWithPaginationTrait owns the page state and exposes the navigation actions.',
+    7: 'The query stays in your repository. Pagination only decides which slice to render.',
+    8: 'Change a filter now. The component returns to page 1 before running the new query.',
+    9: 'The pagination theme controls labels and markup without changing component logic.',
+    10: 'The paginator still exposes totals, ranges, and generated URLs to Twig.',
+    11: 'The current page is validated before the query runs, including direct URL visits.',
+    12: 'The final page contains the remaining jerseys, with no empty placeholders.',
+} %}
+{% set story = pagination.totalPages == 1
+    ? pagination.totalItems ~ ' jerseys match these filters. Change a color or pattern to reopen the collection.'
+    : stories[pagination.currentPage]|default(
+        'Page ' ~ pagination.currentPage ~ ' shows items ' ~ pagination.firstItemNumber ~ '-' ~ pagination.lastItemNumber ~ ' while preserving the active filters.'
+    )
+%}
+
+<div{{ attributes }} class="LivePagination">
+    {{ include('components/LivePagination/JerseySymbols.html.twig') }}
+
+    <div class="layout">
+        <section class="results" aria-label="Generated jerseys">
+            <div class="frame" data-loading="addClass(is-loading)">
+                <ol class="grid" aria-label="Generated jerseys">
+                    {% for jersey in pagination %}
+                        <twig:JerseyCard
+                            :jersey="jersey"
+                        />
+                    {% else %}
+                        <li class="empty">No jersey matches these filters.</li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            {% if pagination.totalItems > 0 %}
+                <p class="page-story">{{ story }}</p>
+            {% endif %}
+
+            {% if pagination.totalPages > 1 %}
+                <footer class="nav">
+                    {{ include('components/LivePagination/Pagination.html.twig') }}
+                </footer>
+            {% endif %}
+        </section>
+
+        <aside class="sidebar" aria-label="Filters and pagination state">
+            <div class="filters" aria-label="Filter jerseys">
+                <fieldset class="filter colors">
+                    <legend>Color</legend>
+
+                    <div>
+                        {% for name, value in filters.color %}
+                            <button
+                                type="button"
+                                class="color"
+                                aria-label="{{ name|capitalize }}"
+                                aria-pressed="{{ this.color == name ? 'true' : 'false' }}"
+                                style="--swatch: {{ value }}"
+                                data-action="live#action"
+                                data-live-action-param="toggleFilter"
+                                data-live-name-param="color"
+                                data-live-value-param="{{ name }}"
+                                data-loading="addAttribute(disabled)"
+                            ><span aria-hidden="true"></span></button>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+
+                <fieldset class="filter patterns">
+                    <legend>Pattern</legend>
+
+                    <div>
+                        {% for value, label in filters.pattern %}
+                            <button
+                                type="button"
+                                class="motif"
+                                aria-label="{{ label }}"
+                                aria-pressed="{{ this.pattern == value ? 'true' : 'false' }}"
+                                data-action="live#action"
+                                data-live-action-param="toggleFilter"
+                                data-live-name-param="pattern"
+                                data-live-value-param="{{ value }}"
+                                data-loading="addAttribute(disabled)"
+                            >
+                                <span class="sample" data-pattern="{{ value }}" aria-hidden="true"></span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+
+            <dl class="meta" aria-label="Pagination state">
+                <div>
+                    <dt>Total jerseys</dt>
+                    <dd>{{ pagination.totalItems }}</dd>
+                </div>
+                <div>
+                    <dt>Per page</dt>
+                    <dd>{{ pagination.itemsPerPage }}</dd>
+                </div>
+                <div>
+                    <dt>URL state</dt>
+                    <dd class="query">
+                        <code>page={{ pagination.currentPage }}</code>
+                        {% if this.color %}<code>color={{ this.color }}</code>{% endif %}
+                        {% if this.pattern %}<code>pattern={{ this.pattern }}</code>{% endif %}
+                    </dd>
+                </div>
+            </dl>
+        </aside>
+    </div>
+</div>

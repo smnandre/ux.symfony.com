@@ -1,0 +1,87 @@
+{% extends 'demos/pagination/demo.html.twig' %}
+
+{% block demo_container %}
+    <div class="LivePaginationStage max-w-[1220px] mx-auto mb-12">
+        <twig:Browser
+            class="LivePaginationBrowser shadow-blur shadow-blur--rainbow w-full"
+            frameClass="aspect-[3/2]"
+        >
+            <twig:LivePagination paginationRoute="app_demo_pagination_live" />
+        </twig:Browser>
+    </div>
+
+    <section class="LivePaginationExplanation py-12" style="padding-top: 6rem;">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Twig/Components/LivePagination.php"
+                :lineStart="30"
+                :lineEnd="52"
+            >
+## A filterable catalog
+
+`color` and `pattern` are URL-bound LiveProps. The component receives its
+repository through ordinary Symfony dependency injection.
+
+`createPagination()` starts from the filtered repository query, preserves the
+active filters in generated URLs, and asks for 10 jerseys at a time.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="LivePaginationExplanation py-12">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Twig/Components/LivePagination.php"
+                :lineStart="20"
+                :lineEnd="28"
+                reversed
+                sticky
+            >
+## Add the pagination trait
+
+`ComponentWithPaginationTrait` adds the writable page state and the actions
+that move forward, backward, or to a specific page.
+
+The component does not need to implement that state or duplicate the navigation
+logic itself.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="LivePaginationExplanation py-12">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <twig:Code:CodeWithExplanationRow
+                filename="src/Twig/Components/LivePagination.php"
+                :lineStart="68"
+                :lineEnd="95"
+                sticky
+            >
+## Reset after a filter changes
+
+`toggleFilter()` validates the selected option and updates the corresponding
+LiveProp before the component renders the filtered query again.
+
+`resetPage()` returns to page 1 first. A smaller filtered result can never leave
+the component stranded on a page that no longer exists.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+
+    <section class="LivePaginationExplanation py-12">
+        <div class="max-w-[1400px] mx-auto px-6 md:px-12">
+            <twig:Code:CodeWithExplanationRow
+                filename="templates/components/LivePagination/Pagination.html.twig"
+                reversed
+                sticky
+            >
+## Enhance ordinary links
+
+`ux_pagination()` still renders real links. `paginationLinkAttributes` adds the
+Live action that updates only this component when JavaScript is available.
+
+The same markup keeps its normal navigation fallback, and the selected theme
+does not need any LiveComponent-specific code.
+            </twig:Code:CodeWithExplanationRow>
+        </div>
+    </section>
+{% endblock %}

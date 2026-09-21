@@ -135,6 +135,7 @@
 @import "./components/_ProductGrid.css";
 @import "./components/_Terminal.css";
 @import "./components/_PaginationLanding.css";
+@import "./components/_LivePagination.css";
 @import "./components/_ToolkitPreview.css";
 @import "./components/_Wysiwyg.css";
 @import "./components/_CodeDescription.css";
