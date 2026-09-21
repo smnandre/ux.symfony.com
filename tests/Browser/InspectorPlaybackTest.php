@@ -39,24 +39,49 @@ final class InspectorPlaybackTest extends PlaywrightTestCase
         }
     }
 
-    public function testGuidedDemoUsesInteractiveFrames()
+    public function testGuidedDemoUsesInteractiveFrames(): void
     {
         $this->page->goto($this->baseUrl.'/inspector');
 
         $frame = $this->page->locator('[data-inspector-mockup-target="frame"]');
         $this->expect($frame)->withTimeout(15000)->toBeVisible();
+        $this->expect($this->page->locator('#inspector-stage'))->withTimeout(15000)->toHaveAttribute('aria-busy', 'false');
         $this->expect($this->page->locator('.uxc-interact'))->toHaveCount(0);
         self::assertNull($frame->getAttribute('inert'));
 
         $inspect = $this->page->locator('[role="tab"][data-mode="inspect"]');
         $inspect->click();
         $this->expect($inspect)->toHaveAttribute('aria-selected', 'true');
-        $this->expect($this->page->locator('iframe[src*="/demos/inspector/inspect"]'))
+        $this->expect($this->page->locator('[data-controller~="inspector-mockup"]'))
+            ->toHaveAttribute('data-inspector-mockup-autoplay-value', 'false');
+        $this->page->waitForFunction(
+            '() => Number.parseFloat(getComputedStyle(document.querySelector("[data-controller~=inspector-mockup]")).getPropertyValue("--progress")) > 0',
+            null,
+            ['timeout' => 1000],
+        );
+        $inspectFrame = $this->page->locator('iframe[src*="/demos/inspector/inspect"]');
+        $this->expect($inspectFrame)
             ->withTimeout(15000)
             ->toBeVisible();
+        $firstInspectRun = $inspectFrame->getAttribute('data-run');
+
+        $trace = $this->page->locator('[role="tab"][data-mode="trace"]');
+        $trace->click();
+        $this->expect($trace)->toHaveAttribute('aria-selected', 'true');
+        $this->expect($this->page->locator('iframe[src*="/demos/inspector/trace"]'))
+            ->withTimeout(15000)
+            ->toBeVisible();
+
+        $inspect->click();
+        $this->expect($inspect)->toHaveAttribute('aria-selected', 'true');
+        $restartedInspectFrame = $this->page->locator('iframe[src*="/demos/inspector/inspect"]');
+        $this->expect($restartedInspectFrame)
+            ->withTimeout(15000)
+            ->toBeVisible();
+        self::assertNotSame($firstInspectRun, $restartedInspectFrame->getAttribute('data-run'));
     }
 
-    public function testUserInputStopsPlayback()
+    public function testUserInputStopsPlayback(): void
     {
         $this->page->addInitScript(<<<'JS'
             window.__inspectorDemoMessages = [];

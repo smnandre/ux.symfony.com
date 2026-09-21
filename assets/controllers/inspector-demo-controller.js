@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+// TODO: Import this from symfony/ux-inspector once the package is available to the site.
 import { connectStimulus } from "../demos/inspector/ux-inspector.js";
 import { getComponent } from "@symfony/ux-live-component";
 import { withDemoScrolling } from "../demos/inspector/scroll.js";
@@ -8,7 +9,11 @@ const CHARACTER_DELAY = 500;
 
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-  static values = { scenario: String, panelWidth: { type: Number, default: 380 } };
+  static values = {
+    scenario: String,
+    run: String,
+    panelWidth: { type: Number, default: 380 },
+  };
 
   connect() {
     this.inspector = document.querySelector("ux-inspector");
@@ -17,7 +22,10 @@ export default class extends Controller {
     this.started = false;
     this.stopped = false;
     this.ready = false;
-    this.runId = new URL(location.href).searchParams.get("run") ?? "";
+    this.parentOrigin = new URL(document.baseURI).origin;
+    this.runId = this.hasRunValue
+      ? this.runValue
+      : (new URL(location.href).searchParams.get("run") ?? "");
     this.clock = new PlaybackClock(() => this.checkConnected());
     this.setPaused(window.parent !== window);
     for (const type of ["pointerdown", "keydown", "input"]) {
@@ -31,7 +39,7 @@ export default class extends Controller {
       (event) => {
         if (
           this.stopped ||
-          event.origin !== location.origin ||
+          event.origin !== this.parentOrigin ||
           event.source !== window.parent ||
           event.data?.run !== this.runId
         )
@@ -60,7 +68,6 @@ export default class extends Controller {
     this.clock.wake();
     clearTimeout(this.pointerTimer);
     this.pointer?.remove();
-    this.shortcut?.remove();
   }
 
   takeControl(event) {
@@ -94,7 +101,7 @@ export default class extends Controller {
   post(data) {
     window.parent.postMessage(
       { inspectorDemo: true, scenario: this.scenarioValue, run: this.runId, ...data },
-      location.origin,
+      this.parentOrigin,
     );
   }
 
@@ -105,7 +112,6 @@ export default class extends Controller {
       const steps = this.scenarios[this.scenarioValue];
       const queries = new Map();
       this.duration = steps.reduce((duration, step) => {
-        if (step.key === "u") return duration + CHARACTER_DELAY;
         if (step.text === undefined) return duration + 1000;
         const input = step.target();
         const previous = queries.get(input) ?? input.value;
@@ -113,16 +119,12 @@ export default class extends Controller {
         return duration + 1000 + (previous.length + step.text.length) * CHARACTER_DELAY;
       }, 2000);
       this.startedAt = this.activeTime;
-      let nextActionAt = this.startedAt + 1000;
+      let nextActionAt = this.startedAt;
       for (const step of steps) {
         await this.wait(Math.max(0, nextActionAt - this.activeTime));
-        nextActionAt = this.activeTime + (step.key === "u" ? CHARACTER_DELAY : 1000);
-        if (step.key) {
-          await this.pressKey(step.key);
-        } else {
-          const target = step.target();
-          withDemoScrolling(() => this.click(target));
-        }
+        nextActionAt = this.activeTime + 1000;
+        const target = step.target();
+        withDemoScrolling(() => this.click(target));
         if (step.text !== undefined) {
           await this.type(step.target(), step.text);
           nextActionAt = this.activeTime + 1000;
@@ -167,8 +169,10 @@ export default class extends Controller {
     });
     return {
       find: [
-        { key: "u" },
-        { key: "x", until: () => this.inspector.isOpen },
+        {
+          target: panel('.pull-tab button[aria-label="Open Inspector"]'),
+          until: () => this.inspector.isOpen,
+        },
         { target: panel('[data-action="overlay"]') },
         { target: panel('.filters [data-framework="stimulus"]') },
         componentQuery("ca"),
@@ -228,27 +232,6 @@ export default class extends Controller {
     element.click();
     pointer.addEventListener("animationend", () => pointer.remove(), { once: true });
     this.pointerTimer = setTimeout(() => pointer.remove(), 1000);
-  }
-
-  async pressKey(key) {
-    if (!this.shortcut?.isConnected) {
-      this.shortcut = document.createElement("div");
-      this.shortcut.className = "demo-shortcut";
-      this.shortcut.popover = "manual";
-      this.shortcut.setAttribute("aria-hidden", "true");
-      this.shortcut.innerHTML = '<kbd data-key="u">U</kbd><kbd data-key="x">X</kbd>';
-      document.body.append(this.shortcut);
-      this.shortcut.showPopover();
-    }
-    for (const keycap of this.shortcut.querySelectorAll("kbd")) {
-      keycap.classList.toggle("is-pressed", keycap.dataset.key === key);
-    }
-    document.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
-    document.dispatchEvent(new KeyboardEvent("keyup", { key, bubbles: true }));
-    if (key === "x") {
-      await this.wait(CHARACTER_DELAY);
-      this.shortcut.remove();
-    }
   }
 
   async type(input, text) {

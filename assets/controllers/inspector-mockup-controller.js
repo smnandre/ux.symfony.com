@@ -3,7 +3,10 @@ import { Controller } from "@hotwired/stimulus";
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
   static targets = ["stage", "tab", "frame", "error"];
-  static values = { mode: { type: String, default: "find" } };
+  static values = {
+    mode: { type: String, default: "find" },
+    autoplay: { type: Boolean, default: true },
+  };
 
   connect() {
     this.modes = this.tabTargets.map((tab) => tab.dataset.mode);
@@ -26,7 +29,8 @@ export default class extends Controller {
     this.resizer.observe(this.stageTarget);
     this.fit();
     this.connected = true;
-    this.load();
+    if (this.frameTarget.dataset.run) this.adoptInitialFrame();
+    else this.load();
   }
 
   receive(event) {
@@ -44,39 +48,16 @@ export default class extends Controller {
     if (data.ready && !this.ready) {
       clearTimeout(this.loadTimeout);
       this.loading?.abort();
-      if (this.pendingFrame) {
-        const previous = this.frameTarget;
-        const frame = this.pendingFrame;
-        this.pendingFrame = null;
-        frame.style.visibility = "";
-        frame.setAttribute("data-inspector-mockup-target", "frame");
-        previous.removeAttribute("data-inspector-mockup-target");
-        previous.inert = true;
-        if (this.presented && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          this.outgoingFrame = previous;
-          this.fade = frame.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: 220,
-            easing: "ease-out",
-          });
-          this.fade.finished
-            .then(() => {
-              previous.remove();
-              if (this.outgoingFrame === previous) {
-                this.outgoingFrame = null;
-                this.fade = null;
-              }
-            })
-            .catch(() => {});
-        } else previous.remove();
-        this.presented = true;
-        this.fit();
-      }
+      if (this.pendingFrame) this.presentPendingFrame(this.pendingFrame);
       this.stageTarget.setAttribute("aria-busy", "false");
       this.ready = true;
       this.post({ command: "play", paused: !this.visible || document.hidden });
     }
-    if (typeof data.progress === "number")
-      this.element.style.setProperty("--progress", String(data.progress));
+    if (typeof data.progress === "number") {
+      this.progress = Math.max(this.progress ?? 0, data.progress);
+      this.element.style.setProperty("--progress", String(this.progress));
+    }
+    if (data.finished) this.scheduleNext();
   }
 
   cancelLoad() {
@@ -93,6 +74,7 @@ export default class extends Controller {
   fail() {
     this.stopFrames();
     this.cancelLoad();
+    clearTimeout(this.autoplayTimer);
     this.runId = null;
     this.ready = false;
     this.frameTarget.style.visibility = "hidden";
@@ -113,6 +95,7 @@ export default class extends Controller {
   }
 
   select(event) {
+    this.stopAutoplay();
     this.selectMode(event.params.mode);
   }
 
@@ -132,8 +115,28 @@ export default class extends Controller {
     }[event.key];
     if (next === undefined) return;
     event.preventDefault();
+    this.stopAutoplay();
     this.selectMode(this.modes[next]);
     this.tabTargets[next].focus();
+  }
+
+  replay() {
+    this.stopAutoplay();
+    this.load();
+  }
+
+  stopAutoplay() {
+    this.autoplayValue = false;
+    clearTimeout(this.autoplayTimer);
+  }
+
+  scheduleNext() {
+    clearTimeout(this.autoplayTimer);
+    if (!this.autoplayValue) return;
+    this.autoplayTimer = setTimeout(() => {
+      const index = this.modes.indexOf(this.modeValue);
+      this.selectMode(this.modes[(index + 1) % this.modes.length]);
+    }, 1000);
   }
 
   modeValueChanged() {
@@ -150,6 +153,23 @@ export default class extends Controller {
     if (this.connected) this.load();
   }
 
+  adoptInitialFrame() {
+    const frame = this.frameTarget;
+    this.ready = false;
+    this.runId = frame.dataset.run;
+    this.loading = new AbortController();
+    this.presented = true;
+    this.stageTarget.setAttribute("aria-busy", "true");
+    this.errorTarget.hidden = true;
+    this.element.style.setProperty("--progress", "0");
+    frame.addEventListener("load", () => this.post({ command: "ready" }, frame), {
+      signal: this.loading.signal,
+      once: true,
+    });
+    this.loadTimeout = setTimeout(() => this.fail(), 15000);
+    this.post({ command: "ready" }, frame);
+  }
+
   load() {
     const selected = this.tabTargets.find((tab) => tab.dataset.mode === this.modeValue);
     this.stopFrames();
@@ -159,13 +179,14 @@ export default class extends Controller {
     this.loading = new AbortController();
     this.stageTarget.setAttribute("aria-busy", "true");
     this.errorTarget.hidden = true;
-    this.element.style.setProperty("--progress", "0");
+    this.startProgress();
     delete this.stageTarget.dataset.failed;
     const url = new URL(selected.dataset.url, location.origin);
     url.searchParams.set("run", this.runId);
     // Prepare the next document before fading it over the current one.
     const frame = this.frameTarget.cloneNode(false);
     frame.removeAttribute("data-inspector-mockup-target");
+    frame.removeAttribute("srcdoc");
     frame.style.visibility = "hidden";
     frame.loading = "eager";
     frame.dataset.run = this.runId;
@@ -174,12 +195,57 @@ export default class extends Controller {
     frame.addEventListener(
       "load",
       () => {
-        if (this.pendingFrame === frame) this.post({ command: "ready" });
+        if (this.pendingFrame !== frame) return;
+        this.presentPendingFrame(frame);
+        this.post({ command: "ready" });
       },
       { signal: this.loading.signal, once: true },
     );
     this.loadTimeout = setTimeout(() => this.fail(), 15000);
     this.stageTarget.append(frame);
+  }
+
+  startProgress() {
+    this.progress = 0;
+    this.element.toggleAttribute("data-progress-reset", true);
+    this.element.style.setProperty("--progress", "0");
+    requestAnimationFrame(() => {
+      if (!this.connected) return;
+      this.element.removeAttribute("data-progress-reset");
+      requestAnimationFrame(() => {
+        if (!this.connected) return;
+        this.progress = 0.015;
+        this.element.style.setProperty("--progress", String(this.progress));
+      });
+    });
+  }
+
+  presentPendingFrame(frame) {
+    if (this.pendingFrame !== frame) return;
+    const previous = this.frameTarget;
+    this.pendingFrame = null;
+    frame.style.visibility = "";
+    frame.setAttribute("data-inspector-mockup-target", "frame");
+    previous.removeAttribute("data-inspector-mockup-target");
+    previous.inert = true;
+    if (this.presented && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      this.outgoingFrame = previous;
+      this.fade = frame.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 220,
+        easing: "ease-out",
+      });
+      this.fade.finished
+        .then(() => {
+          previous.remove();
+          if (this.outgoingFrame === previous) {
+            this.outgoingFrame = null;
+            this.fade = null;
+          }
+        })
+        .catch(() => {});
+    } else previous.remove();
+    this.presented = true;
+    this.fit();
   }
 
   stopFrames() {

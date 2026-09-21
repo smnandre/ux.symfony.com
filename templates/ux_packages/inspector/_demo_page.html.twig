@@ -7,8 +7,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
+    {% if baseUrl|default %}<base href="{{ baseUrl }}">{% endif %}
     <title>Inspector {{ page }} demo</title>
     <link rel="stylesheet" href="{{ asset('styles/demos/inspector.css') }}">
+    <link rel="stylesheet" href="{{ asset('@symfony/ux-live-component/live.min.css') }}">
 </head>
 <body>
     <header class="store-header" aria-label="Example shop">{{ shape.bar('120px', 12) }}<div class="header-links">{{ shape.bar('32px', 6) }}{{ shape.bar('44px', 6) }}</div></header>
@@ -28,8 +30,8 @@
             </div>
         {% endif %}
     </main>
-    {{ importmap() }}
-    <div hidden data-controller="inspector-demo" data-inspector-demo-scenario-value="{{ page }}"></div>
+    {{ importmap('demos/inspector') }}
+    <div hidden data-controller="inspector-demo" data-inspector-demo-scenario-value="{{ page }}"{% if run|default %} data-inspector-demo-run-value="{{ run }}"{% endif %}></div>
     <ux-inspector{% if page != 'find' %} open{% endif %} id="ux-inspector" data-config='{"ignore_selectors":["[data-controller~=\"inspector-demo\"]"],"packages":{"stimulus":true,"livecomponent":true,"turbo":true}}'></ux-inspector>
 </body>
 </html>

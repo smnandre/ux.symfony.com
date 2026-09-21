@@ -1,13 +1,13 @@
 {% macro chapter(mode, icon, title, line) %}
     <button
-        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" aria-selected="{{ mode == 'find' ? 'true' : 'false' }}" tabindex="{{ mode == 'find' ? '0' : '-1' }}" class="uxc-chapter" data-mode="{{ mode }}"
+        type="button" role="tab" id="inspector-chapter-{{ mode }}" aria-controls="inspector-stage" aria-selected="{{ mode == 'find' ? 'true' : 'false' }}" tabindex="{{ mode == 'find' ? '0' : '-1' }}" class="uxc-chapter{{ mode == 'find' ? ' is-current' }}" data-mode="{{ mode }}"
         data-url="{{ path('app_demo_inspector', {page: mode}) }}"
         data-inspector-mockup-target="tab"
         data-action="inspector-mockup#select"
         data-inspector-mockup-mode-param="{{ mode }}"
     >
         <span class="uxc-chapter__head ubuntu">
-            <twig:ux:icon name="feature:{{ icon }}" class="uxc-chapter__icon **:stroke-1"/>
+            <twig:ux:icon name="lucide:{{ icon }}" class="uxc-chapter__icon **:stroke-1"/>
             {{ title }}
         </span>
         <span class="uxc-chapter__reveal"><span class="uxc-chapter__line text-balance">{{ line }}</span></span>
@@ -15,6 +15,12 @@
 {% endmacro %}
 
 {% import _self as ph %}
+{% set initial_demo_url = url('app_demo_inspector', {page: 'find', run: 'initial'}) %}
+{% set initial_demo_html = include('ux_packages/inspector/_demo_page.html.twig', {
+    page: 'find',
+    run: 'initial',
+    baseUrl: initial_demo_url,
+}, false) %}
 
 <style>
     /* The site toggles themes with a class and declares no color-scheme, so
@@ -56,7 +62,7 @@
     .uxc-error[hidden] { display: none; }
     .uxc-error button { padding: .6rem 1rem; border: 1px solid #eb72af; border-radius: .4rem; color: inherit; cursor: pointer; }
     /* A full width band: it rides over the bottom of the browser so the frame is
-       cut, and hides the halo behind it. The ground comes from bg-subtle. */
+       cut, and hides the halo behind it. The ground matches the next section. */
     .uxc-cut {
         position: relative; z-index: 1;
         margin-top: 0;
@@ -77,7 +83,7 @@
         border: 0; margin: 0;
         background: transparent; text-align: left;
         color: light-dark(#495057, #adb5bd);
-        transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+        transition: background-color .15s ease, color .15s ease;
     }
     .uxc-chapter + .uxc-chapter { box-shadow: inset 1px 0 var(--uxc-line); }
     .uxc-chapter.is-current {
@@ -87,15 +93,15 @@
     .uxc-chapter__head { display: flex; align-items: center; gap: .6rem; font-size: 1.1rem; font-weight: 700; }
     .uxc-chapter__icon {
         height: 1.45rem; width: 1.45rem; flex: 0 0 auto; opacity: .45;
-        transition: opacity .25s ease, scale .25s ease;
     }
     .uxc-chapter.is-current .uxc-chapter__icon { opacity: 1; scale: 1.15; }
-    .uxc-chapters::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: #eb72af; transform: scaleX(var(--progress, 0)); transform-origin: left; z-index: 2; }
-    .uxc-chapter__reveal { display: grid; grid-template-rows: 0fr; opacity: 0; transform: translateY(9px); visibility: hidden; transition: grid-template-rows .35s ease, opacity .3s ease, transform .35s ease, visibility .35s; }
-    .uxc-chapter.is-current .uxc-chapter__reveal { grid-template-rows: 1fr; opacity: 1; transform: translateY(0); visibility: visible; }
+    .uxc-chapters::before { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: #eb72af; transform: scaleX(var(--progress, 0)); transform-origin: left; transition: transform .12s linear; z-index: 2; }
+    .uxc[data-progress-reset] .uxc-chapters::before { transition: none; }
+    .uxc-chapter__reveal { display: none; }
+    .uxc-chapter.is-current .uxc-chapter__reveal { display: block; }
     .uxc-chapter__line { min-height: 0; overflow: hidden; font-size: .82rem; line-height: 1.4; opacity: .75; padding-top: 0; }
     .uxc-chapter.is-current .uxc-chapter__line { padding-top: .5rem; }
-    @media (prefers-reduced-motion: reduce) { .uxc-chapter, .uxc-chapter__reveal, .uxc-chapter__icon { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .uxc-chapter { transition: none; } }
 
     /* Full screen keeps the chapters: the whole shell goes, not just the frame. */
     .uxc-shell:fullscreen {
@@ -127,29 +133,30 @@
                 <twig:block name="chrome_title">
                     <span class="uxc-title">UX INSPECTOR</span>
                 </twig:block>
-                <div class="uxc-stage" id="inspector-stage" role="tabpanel" aria-labelledby="inspector-chapter-find" data-inspector-mockup-target="stage" data-mode="find">
+                <div class="uxc-stage" id="inspector-stage" role="tabpanel" aria-labelledby="inspector-chapter-find" aria-busy="true" data-inspector-mockup-target="stage" data-mode="find">
                     <iframe
                         title="The UX Inspector running on a page"
-                        src="about:blank"
-                        loading="lazy"
+                        srcdoc="{{ initial_demo_html|e('html_attr') }}"
+                        loading="eager"
+                        data-run="initial"
                         data-inspector-mockup-target="frame"
                     ></iframe>
                     <div class="uxc-error" data-inspector-mockup-target="error" role="alert" hidden>
                         <p>The demo could not load.</p>
-                        <button type="button" data-action="inspector-mockup#load">Replay scenario</button>
+                        <button type="button" data-action="inspector-mockup#replay">Replay scenario</button>
                     </div>
                 </div>
             </twig:Browser>
         </div>
 
-        <div class="uxc-cut bg-subtle">
+        <div class="uxc-cut bg-body">
             <div class="uxc-top">
                 <div class="uxc-chapters" role="tablist" aria-label="Inspector views"
                      data-action="keydown->inspector-mockup#move">
                     {{ ph.chapter('find', 'layers', 'Find', 'Every Stimulus, Live and Turbo element, outlined in the page.') }}
-                    {{ ph.chapter('inspect', 'crosshair', 'Inspect', 'Values and props, read from the running instance.') }}
-                    {{ ph.chapter('connect', 'git-fork', 'Connect', 'Nested Live Components and Stimulus outlets, connected.') }}
-                    {{ ph.chapter('trace', 'activity', 'Trace', 'Events as they fire, in the order they fire.') }}
+                    {{ ph.chapter('inspect', 'mouse-pointer-click', 'Inspect', 'Values and props, read from the running instance.') }}
+                    {{ ph.chapter('connect', 'git-branch', 'Connect', 'Nested Live Components and Stimulus outlets, connected.') }}
+                    {{ ph.chapter('trace', 'radio', 'Trace', 'Events as they fire, in the order they fire.') }}
                 </div>
             </div>
         </div>

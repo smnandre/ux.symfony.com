@@ -19,7 +19,7 @@ final class InspectorDemoTest extends WebTestCase
 {
     use InteractsWithLiveComponents;
 
-    public function testSearchReturnsOnlyMatchingProductsInsideTheTurboFrame()
+    public function testSearchReturnsOnlyMatchingProductsInsideTheTurboFrame(): void
     {
         $client = self::createClient();
         $client->request('GET', '/demos/inspector/results?q=LIVE');
@@ -34,7 +34,7 @@ final class InspectorDemoTest extends WebTestCase
         self::assertSelectorTextSame('turbo-frame#results', '');
     }
 
-    public function testCartSurvivesLiveRequestsWithoutDuplicatesOrUnknownProducts()
+    public function testCartSurvivesLiveRequestsWithoutDuplicatesOrUnknownProducts(): void
     {
         $cart = $this->createLiveComponent('Demo:InspectorCart');
         $cart->call('add', ['product' => 1])->call('add', ['product' => 1])->call('add', ['product' => 99]);
@@ -48,14 +48,14 @@ final class InspectorDemoTest extends WebTestCase
         self::assertCount(0, $cart->render()->crawler()->filter('.basket-item'));
     }
 
-    public function testLiveSearchDispatchesTheQueryForTheTurboController()
+    public function testLiveSearchDispatchesTheQueryForTheTurboController(): void
     {
         $search = $this->createLiveComponent('Demo:InspectorSearch', ['query' => 'live']);
         $search->call('search');
         $this->assertComponentDispatchBrowserEvent($search, 'inspector:search')->withPayloadSubset(['query' => 'live']);
     }
 
-    public function testEveryScenarioHasItsOwnPageWithoutReadableStorefrontText()
+    public function testEveryScenarioHasItsOwnPageWithoutReadableStorefrontText(): void
     {
         $client = self::createClient();
         foreach (['find', 'inspect', 'connect', 'trace'] as $page) {
@@ -86,7 +86,7 @@ final class InspectorDemoTest extends WebTestCase
         }
     }
 
-    public function testProductRemovalRespondsWithRealTurboStreams()
+    public function testProductRemovalRespondsWithRealTurboStreams(): void
     {
         $client = self::createClient();
         $client->request('GET', '/demos/inspector/remove/4');
@@ -96,7 +96,7 @@ final class InspectorDemoTest extends WebTestCase
         self::assertSelectorExists('turbo-stream[action="update"][target="product-updates"]');
     }
 
-    public function testCartRemovalUpdatesTheSubtotal()
+    public function testCartRemovalUpdatesTheSubtotal(): void
     {
         $cart = $this->createLiveComponent('Demo:InspectorCart', ['items' => [1, 2, 3, 4]]);
         $cart->call('remove', ['product' => 4]);
@@ -106,7 +106,7 @@ final class InspectorDemoTest extends WebTestCase
         self::assertSame(78, $cart->component()->getSubtotal());
     }
 
-    public function testDeliveryEventUpdatesTheNestedTotal()
+    public function testDeliveryEventUpdatesTheNestedTotal(): void
     {
         $total = $this->createLiveComponent('Demo:InspectorTotal', ['subtotal' => 120]);
         $total->emit('inspector:delivery-changed', ['express' => true]);
@@ -115,7 +115,7 @@ final class InspectorDemoTest extends WebTestCase
         self::assertSame(120, $total->component()->getTotal());
     }
 
-    public function testFilterDispatchesItsQueryForTheResultsFrame()
+    public function testFilterDispatchesItsQueryForTheResultsFrame(): void
     {
         $search = $this->createLiveComponent('Demo:InspectorSearch');
         $search->call('filter', ['query' => 'live']);
