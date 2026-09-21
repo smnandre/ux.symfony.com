@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { connectStimulus } from "../demos/inspector/ux-inspector.js";
 import { getComponent } from "@symfony/ux-live-component";
 import { withDemoScrolling } from "../demos/inspector/scroll.js";
+import { PlaybackClock } from "../demos/inspector/playback.js";
 
 const CHARACTER_DELAY = 500;
 
@@ -13,14 +14,11 @@ export default class extends Controller {
     this.inspector = document.querySelector("ux-inspector");
     connectStimulus(this.application);
     this.lifetime = new AbortController();
-    this.wakeups = new Set();
     this.started = false;
     this.stopped = false;
     this.ready = false;
-    this.paused = undefined;
     this.runId = new URL(location.href).searchParams.get("run") ?? "";
-    this.pausedDuration = 0;
-    this.pausedAt = null;
+    this.clock = new PlaybackClock(() => this.checkConnected());
     this.setPaused(window.parent !== window);
     for (const type of ["pointerdown", "keydown", "input"]) {
       document.addEventListener(type, (event) => this.takeControl(event), {
@@ -59,7 +57,7 @@ export default class extends Controller {
   stop() {
     this.stopped = true;
     this.setPaused(true);
-    for (const wake of this.wakeups) wake();
+    this.clock.wake();
     clearTimeout(this.pointerTimer);
     this.pointer?.remove();
     this.shortcut?.remove();
@@ -279,56 +277,26 @@ export default class extends Controller {
   }
 
   setPaused(paused) {
-    if (paused === this.paused || (this.stopped && !paused)) return;
-    const now = performance.now();
-    if (paused) this.pausedAt = now;
-    else if (this.pausedAt !== null) {
-      this.pausedDuration += now - this.pausedAt;
-      this.pausedAt = null;
-    }
-    this.paused = paused;
-    for (const wake of this.wakeups) wake();
+    if (paused === this.clock.paused || (this.stopped && !paused)) return;
+    this.clock.setPaused(paused);
   }
 
   get activeTime() {
-    return (this.pausedAt ?? performance.now()) - this.pausedDuration;
-  }
-
-  waitForChange(delay) {
-    return new Promise((resolve) => {
-      let timer;
-      const wake = () => {
-        clearTimeout(timer);
-        this.wakeups.delete(wake);
-        resolve();
-      };
-      this.wakeups.add(wake);
-      if (delay !== undefined) timer = setTimeout(wake, delay);
-    });
+    return this.clock.activeTime;
   }
 
   async wait(duration) {
-    const deadline = this.activeTime + duration;
-    this.checkConnected();
-    while (this.paused || this.activeTime < deadline) {
-      await this.waitForChange(this.paused ? undefined : Math.min(25, deadline - this.activeTime));
-      this.checkConnected();
-      if (!this.paused)
+    await this.clock.wait(duration, () => {
+      if (!this.clock.paused) {
         this.post({ progress: Math.min(1, (this.activeTime - this.startedAt) / this.duration) });
-    }
+      }
+    });
   }
 
   async until(predicate, playback = false) {
-    const time = () => (playback ? this.activeTime : performance.now());
-    const deadline = time() + 15000;
-    while (true) {
-      if (playback) await this.wait(0);
-      this.checkConnected();
-      if (predicate()) return;
-      if (time() > deadline) throw new Error("The demo response timed out.");
-      if (playback) await this.wait(50);
-      else await this.waitForChange(50);
-    }
+    await this.clock.until(predicate, playback, () => {
+      this.post({ progress: Math.min(1, (this.activeTime - this.startedAt) / this.duration) });
+    });
   }
 
   checkConnected() {
