@@ -58,7 +58,7 @@
     --color-secondary-bg: #343a40;
     --color-secondary-bg-subtle: #2b3035;
     --color-tertiary-bg: #2b3035;
-    --color-border: #495057;
+    --color-border: rgb(0 0 0 / 35%);
     --color-border-subtle: #343a40;
     --color-border-translucent: rgba(255, 255, 255, .175);
     --color-code: #ff79c6;
