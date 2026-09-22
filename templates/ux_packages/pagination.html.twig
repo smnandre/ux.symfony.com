@@ -21,7 +21,7 @@
     {% component PackageHeader with {
         package: 'pagination',
         eyebrowText: 'Symfony UX Pagination',
-        demosUrl: path('app_demo_pagination'),
+        demosUrl: path('app_demos'),
     } %}
         {% block title_header %}
             Pagination for all.<br>One <strong>page ahead</strong>.
@@ -499,7 +499,7 @@ range(11, 20), $page->getItems(),
     <twig:Package:Section id="pagination-demos" tone="accent" data-pagination-feature="demos" data-pagination-demo-list>
         <div class="items-end justify-between gap-8 md:flex">
             <twig:Package:SectionTitle class="max-w-2xl" title="See every <strong>page</strong> in action." />
-            <a href="{{ path('app_demo_pagination') }}" class="PaginationCta PaginationCta--primary mt-7 md:mt-0">
+            <a href="{{ path('app_demos') }}" class="PaginationCta PaginationCta--primary mt-7 md:mt-0">
                 Browse pagination demos
                 <twig:ux:icon name="lucide:chevron-right" class="Icon size-4 PaginationCtaIcon" />
             </a>

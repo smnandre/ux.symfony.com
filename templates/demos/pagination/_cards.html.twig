@@ -22,7 +22,11 @@
     },
 ] %}
 
+{% set with_grid = grid is not defined or grid %}
+
+{% if with_grid %}
 <div class="DemoCardGrid {{ class|default('') }}">
+{% endif %}
     {% for demo in pagination_demos %}
         <twig:Card
             name="{{ demo.name }}"
@@ -33,4 +37,6 @@
             :showTags="show_tags is defined ? show_tags : true"
         />
     {% endfor %}
+{% if with_grid %}
 </div>
+{% endif %}
