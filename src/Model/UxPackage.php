@@ -32,6 +32,8 @@ class UxPackage
         private bool $showDocsLink = true,
         private bool $isRemoved = false,
         private ?string $gradient = null,
+        private ?string $seoTitle = null,
+        private ?string $socialTitle = null,
     ) {
     }
 
@@ -86,6 +88,18 @@ class UxPackage
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function getSeoTitle(): string
+    {
+        return $this->seoTitle ?? $this->humanName.' - '.$this->tagLine;
+    }
+
+    public function getSocialTitle(): string
+    {
+        $humanName = str_starts_with($this->humanName, 'UX ') ? substr($this->humanName, 3) : $this->humanName;
+
+        return $this->socialTitle ?? $this->tagLine.' - Symfony UX '.$humanName;
     }
 
     public function getComposerName(): string

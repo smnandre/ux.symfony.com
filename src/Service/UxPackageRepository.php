@@ -31,6 +31,8 @@ class UxPackageRepository
                 'I need to render SVG icons.',
                 'icons.svg',
                 gradient: 'linear-gradient(to bottom right, cyan, purple)',
+                seoTitle: 'UX Icons - SVG icons made easy',
+                socialTitle: 'Symfony UX Icons - SVG icons made easy',
             ),
 
             new UxPackage(

@@ -6,11 +6,11 @@
 {% endblock %}
 
 {% set meta = {
-    title: 'UX Icons - SVG icons made easy',
+    title: package.seoTitle,
     description: 'Render SVG icons seamlessly from your Twig templates. Find the perfect icon among 200,000 choices from the most popular icon sets.',
     canonical: url('app_icons'),
     social: {
-        title: 'Symfony UX Icons - SVG icons made easy',
+        title: package.socialTitle,
         description: 'Render SVG icons seamlessly from your Twig templates. Find the perfect icon among 200,000 choices from the most popular icon sets.',
         image: {
             url: absolute_url(asset(package.getSocialImage('1200x675'))),

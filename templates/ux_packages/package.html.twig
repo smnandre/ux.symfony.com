@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% set meta = {
-    title: package.humanName ~ ' - ' ~ package.tagline,
+    title: package.seoTitle,
     description: package.description,
     canonical: url(package.route),
     social: {
-        title: package.tagline ~ ' - Symfony UX ' ~ package.humanName|u.trimStart('UX '),
+        title: package.socialTitle,
         description: package.description|striptags,
         image: {
             url: absolute_url(asset(package.getSocialImage('1200x675'))),
