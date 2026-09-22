@@ -26,6 +26,8 @@
 
 {% block content %}
 
+<article class="dark:[--package-primary-text:#EB72AF]">
+
     <div class="pt-20">
         <div class="max-w-[1400px] mx-auto px-6 pt-6 md:px-12">
             <p class="eyebrows text-center mt-12 mb-4">SVG icons made easy</p>
@@ -41,6 +43,10 @@
             </div>
         </div>
     </div>
+
+    <section class="max-w-[1400px] mx-auto px-6 md:px-12 py-4">
+        <twig:Icon:IconSearch/>
+    </section>
 
     {% set icons_features = [
         {
@@ -73,11 +79,8 @@
         :items="icons_features"
         title="What UX Icons gives you"
         titleId="icons-overview-title"
+        style="padding-top: .75rem;"
     />
-
-    <section class="max-w-[1400px] mx-auto px-6 md:px-12 py-4">
-        <twig:Icon:IconSearch/>
-    </section>
 
     {% set icons_search %}php bin/console ux:icons:search heart{% endset %}
     {% set icons_import %}php bin/console ux:icons:import lucide:heart
@@ -168,6 +171,8 @@
     </twig:Package:Section>
 
     <twig:PackageSuggestions package="{{ package }}" />
+
+</article>
 
 {% endblock %}
 
