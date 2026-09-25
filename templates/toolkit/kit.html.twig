@@ -3,7 +3,7 @@
 {% set meta = {
     title: 'UX Toolkit - Kits - ' ~ kit.manifest.name,
     description: kit.manifest.description,
-    canonical: url('app_icons'),
+    canonical: url('app_toolkit_kit', {kitId: kit_id}),
     social: {
         title: 'UX Toolkit - Kits - ' ~ kit.manifest.name,
         description: kit.manifest.description,

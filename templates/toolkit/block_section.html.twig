@@ -5,7 +5,7 @@
 {% set meta = {
     title: title,
     description: description,
-    canonical: url('app_icons'),
+    canonical: url('app_toolkit_block_section', {kitId: kit_id, section: section.slug}),
     social: {
         title: title,
         description: description,
