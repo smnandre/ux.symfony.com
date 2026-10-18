@@ -15,6 +15,7 @@ export default class extends Controller {
     static values = { appId: String, apiKey: String, index: String, stylesheet: String };
 
     #loading = null;
+    #usingKeyboard = false;
 
     disconnect() {
         this.#loading?.then((docsearch) => docsearch.destroy());
@@ -30,7 +31,13 @@ export default class extends Controller {
         docsearch.open();
     }
 
+    trackPointer() {
+        this.#usingKeyboard = false;
+    }
+
     toggleOnShortcut(event) {
+        this.#usingKeyboard = true;
+
         if (event.defaultPrevented) {
             return;
         }
@@ -57,7 +64,8 @@ export default class extends Controller {
                     keyboardShortcuts: { 'Ctrl/Cmd+K': false, '/': false, 'Ctrl/Cmd+I': false },
                     // DocSearch lists sections in the order their first hit appears
                     transformItems: (items) => items.toSorted((a, b) => sectionRank(a) - sectionRank(b)),
-                    onClose: () => this.buttonTarget.focus({ preventScroll: true }),
+                    onOpen: () => requestAnimationFrame(() => this.#describeDialog()),
+                    onClose: () => this.buttonTarget.focus({ preventScroll: true, focusVisible: this.#usingKeyboard }),
                     // onReady can fire during the docsearch() call, before `instance` is assigned
                     onReady: () => queueMicrotask(() => resolve(instance)),
                 });
@@ -68,6 +76,19 @@ export default class extends Controller {
             }));
 
         return this.#loading;
+    }
+
+    #describeDialog() {
+        const container = document.querySelector('.DocSearch-Container');
+        const modal = container?.querySelector('.DocSearch-Modal');
+        if (!modal) {
+            return;
+        }
+
+        container.removeAttribute('role');
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'docsearch-label');
     }
 
     #loadStylesheet() {
