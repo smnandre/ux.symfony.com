@@ -1,0 +1,20 @@
+<div
+    data-controller="docsearch"
+    data-docsearch-app-id-value="TOWOPESDZM"
+    data-docsearch-api-key-value="72f93d5cc3ba277e9f15a288154e13e3"
+    data-docsearch-index-value="Documentation"
+    data-docsearch-stylesheet-value="{{ asset('vendor/@docsearch/css/dist/style.min.css') }}"
+    data-action="keydown@window->docsearch#toggleOnShortcut"
+>
+    <button
+        type="button"
+        data-docsearch-target="button"
+        data-action="docsearch#open pointerenter->docsearch#prefetch pointerdown->docsearch#prefetch focus->docsearch#prefetch"
+        aria-keyshortcuts="Meta+K Control+K"
+        class="group flex items-center gap-1.5 h-7 px-2.75 border-0 rounded-full bg-current/2.5 font-title text-sm font-medium leading-[1.45] whitespace-nowrap cursor-pointer opacity-90 transition-all duration-250 hover:opacity-100 hover:bg-current/5 outline-none focus-visible:opacity-100 focus-visible:bg-current/5 focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-current max-nav-wide:w-6 max-nav-wide:h-6 max-nav-wide:p-0 max-nav-wide:justify-center max-nav-wide:bg-transparent max-nav-wide:hover:bg-transparent"
+    >
+        <twig:ux:icon name="icon-search" class="text-base max-nav-wide:text-xl overflow-visible [&_path]:stroke-current [&_path]:stroke-[.5px] [&_path]:[stroke-linejoin:round] transition-transform duration-250 group-hover:scale-108 group-focus-visible:scale-108 motion-reduce:transition-none" aria-hidden="true" />
+        <span class="opacity-70 transition-opacity duration-250 group-hover:opacity-100 group-focus-visible:opacity-100 max-nav-wide:sr-only">Search</span>
+    </button>
+    <div data-docsearch-target="mount" hidden></div>
+</div>
