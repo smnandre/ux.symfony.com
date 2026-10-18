@@ -47,6 +47,8 @@ symfony serve --open
 # The website will be accessible at https://127.0.0.1:9044/
 ```
 
+The search uses Algolia DocSearch and queries the production index, so its results link to ux.symfony.com.
+
 ### Database
 
 Run database migrations:
