@@ -12,26 +12,20 @@
 namespace App\Service\Toolkit;
 
 use App\Service\CommonMark\ConverterFactory;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\UX\Toolkit\Doc\RecipeDocRenderer;
 use Symfony\UX\Toolkit\Doc\RenderedRecipeDoc;
 use Symfony\UX\Toolkit\Kit\Kit;
 use Symfony\UX\Toolkit\Recipe\Recipe;
-use Symfony\UX\Toolkit\Registry\LocalRegistry;
 use Twig\Environment;
 
 class ToolkitService
 {
-    /** @var array<string, Kit> */
-    private array $kits = [];
-
     /** @var array<string, RenderedRecipeDoc> */
     private array $renderedRecipes = [];
 
     public function __construct(
         private Environment $twig,
-        #[Autowire(service: '.ux_toolkit.registry.local')]
-        private LocalRegistry $localRegistry,
+        private KitRepository $kitRepository,
         private ComponentPreviewUrlGeneratorFactory $previewUrlGeneratorFactory,
         private ConverterFactory $converterFactory,
     ) {
@@ -39,7 +33,7 @@ class ToolkitService
 
     public function getKit(string $kitId): Kit
     {
-        return $this->kits[$kitId] ??= $this->localRegistry->getKit($kitId);
+        return $this->kitRepository->get($kitId);
     }
 
     /**
@@ -47,7 +41,7 @@ class ToolkitService
      */
     public function getKits(): array
     {
-        return $this->kits = $this->localRegistry->getAvailableKits();
+        return $this->kitRepository->all();
     }
 
     public function renderRecipeHtml(string $kitId, Recipe $recipe): string
