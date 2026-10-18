@@ -26,7 +26,7 @@
         ><code>{{ _code ? _code|trim|raw : code }}</code></pre>
     {% endif %}
 
-    <button class="cursor-pointer opacity-25 absolute right-0 top-2 group-hover:opacity-100" data-action="clipboarder#copy" data-clipboarder-target="button">
+    <button type="button" aria-label="Copy code" class="cursor-pointer opacity-25 absolute right-0 top-2 group-hover:opacity-100" data-action="clipboarder#copy" data-clipboarder-target="button">
         <twig:ux:icon name="copy" />
     </button>
 </twig:Code:Snippet>
