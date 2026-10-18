@@ -52,4 +52,57 @@
             display: none !important;
         }
     }
+
+    .DocSearch-Container {
+        --search-accent: var(--package-primary-text, #1C45CB);
+        --search-tint: color-mix(in oklab, var(--color-accent, #1C45CB) 8%, var(--color-body-bg));
+
+        --docsearch-font-family: var(--font-sans);
+        --docsearch-primary-color: var(--search-accent);
+        --docsearch-primary-dark-color: var(--search-accent);
+        --docsearch-soft-primary-color: var(--search-tint);
+        --docsearch-highlight-color: var(--search-accent);
+        --docsearch-focus-color: var(--search-accent);
+        --docsearch-text-color: var(--color-body-text);
+        --docsearch-secondary-text-color: var(--color-secondary-text);
+        --docsearch-muted-color: var(--color-tertiary-text);
+        --docsearch-icon-color: var(--color-secondary-text);
+        --docsearch-subtle-color: var(--color-border);
+        --docsearch-background-color: var(--color-secondary-bg-subtle);
+        --docsearch-container-background: color-mix(in srgb, var(--color-body-bg) 75%, transparent);
+        --docsearch-modal-background: var(--color-body-bg);
+        --docsearch-modal-shadow: 0 0 0 1px var(--color-border), 0 24px 48px -12px rgb(0 0 0 / .25);
+        --docsearch-searchbox-background: var(--color-body-bg);
+        --docsearch-searchbox-focus-background: var(--color-body-bg);
+        --docsearch-hit-color: var(--color-body-text);
+        --docsearch-hit-background: var(--color-body-bg);
+        --docsearch-hit-focus-background: var(--search-tint);
+        --docsearch-hit-highlight-color: transparent;
+        --docsearch-key-background: var(--color-secondary-bg-subtle);
+        --docsearch-key-color: var(--color-secondary-text);
+        --docsearch-footer-background: var(--color-tertiary-bg);
+        --docsearch-footer-shadow: 0 -1px 0 0 var(--color-border-subtle);
+    }
+
+    .dark .DocSearch-Container {
+        --search-accent: var(--package-accent, #8FA8FF);
+        --search-tint: color-mix(in oklab, var(--color-accent, #1C45CB) 18%, var(--color-body-bg));
+        --docsearch-modal-shadow: 0 0 0 1px var(--color-border-translucent), 0 24px 48px -12px rgb(0 0 0 / .6);
+    }
+
+    .DocSearch-Hit mark {
+        color: inherit;
+        text-decoration: underline color-mix(in srgb, var(--search-accent) 55%, transparent) .12em;
+        text-underline-offset: .18em;
+    }
+
+    /* The no-results SVG hardcodes stroke="#5a5e9a" */
+    .DocSearch-Screen-Icon svg {
+        stroke: currentColor;
+    }
+
+    .DocSearch-Hit-source {
+        font-family: var(--font-title);
+        color: var(--color-body-text);
+    }
 }
