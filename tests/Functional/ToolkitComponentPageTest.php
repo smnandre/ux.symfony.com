@@ -11,6 +11,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Service\Toolkit\PreviewVersion;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class ToolkitComponentPageTest extends WebTestCase
@@ -60,15 +61,33 @@ final class ToolkitComponentPageTest extends WebTestCase
         self::assertStringStartsWith('<!DOCTYPE html>', ltrim($client->getResponse()->getContent()));
     }
 
-    public function testComponentPreviewIsCacheableAndPointsToItsPage(): void
+    public function testComponentPreviewOfTheCurrentBuildIsImmutableAndPointsToItsPage(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/toolkit/kits/shadcn/components/button?preview=2');
+        $crawler = $client->request('GET', '/toolkit/kits/shadcn/components/button');
+        $previewUrl = $crawler->filter('[data-lazy-iframe-src-value]')->eq(1)->attr('data-lazy-iframe-src-value');
+
+        self::assertSame('http://localhost/toolkit/kits/shadcn/components/button?preview=2&v='.self::getContainer()->get(PreviewVersion::class)->id, $previewUrl);
+
+        $client->request('GET', $previewUrl);
 
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('Link', '<http://localhost/toolkit/kits/shadcn/components/button>; rel="canonical"');
-        self::assertResponseHeaderSame('Cache-Control', 'max-age=86400, public');
+        self::assertResponseHeaderSame('Cache-Control', 'immutable, max-age=31536000, public, s-maxage=31536000');
         self::assertResponseHasHeader('ETag');
+    }
+
+    public function testComponentPreviewOfAnotherBuildIsRevalidated(): void
+    {
+        $client = static::createClient();
+
+        foreach (['/toolkit/kits/shadcn/components/button?preview=2', '/toolkit/kits/shadcn/components/button?preview=2&v=0'] as $url) {
+            $client->request('GET', $url);
+
+            self::assertResponseIsSuccessful();
+            self::assertResponseHeaderSame('Cache-Control', 'max-age=0, must-revalidate, public');
+            self::assertResponseHasHeader('ETag');
+        }
     }
 
     public function testComponentPreviewBeyondTheExamplesIsNotFound(): void
@@ -84,8 +103,9 @@ final class ToolkitComponentPageTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/toolkit/kits/shadcn/blocks/login');
 
+        $version = self::getContainer()->get(PreviewVersion::class)->id;
         self::assertSame(
-            ['http://localhost/toolkit/kits/shadcn/blocks/login?preview=login-01', 'http://localhost/toolkit/kits/shadcn/blocks/login?preview=login-02'],
+            ['http://localhost/toolkit/kits/shadcn/blocks/login?preview=login-01&v='.$version, 'http://localhost/toolkit/kits/shadcn/blocks/login?preview=login-02&v='.$version],
             $crawler->filter('[data-lazy-iframe-src-value]')->each(static fn ($node) => $node->attr('data-lazy-iframe-src-value')),
         );
 
@@ -100,7 +120,12 @@ final class ToolkitComponentPageTest extends WebTestCase
     public function testToolkitDemoPreviewRendersWithTheKit(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/toolkit?preview=demo');
+        $crawler = $client->request('GET', '/toolkit');
+        $previewUrl = $crawler->filter('[data-lazy-iframe-src-value]')->first()->attr('data-lazy-iframe-src-value');
+
+        self::assertSame('http://localhost/toolkit?preview=demo&v='.self::getContainer()->get(PreviewVersion::class)->id, $previewUrl);
+
+        $client->request('GET', $previewUrl);
 
         self::assertResponseIsSuccessful();
         self::assertStringContainsString("import 'ux-toolkit-shadcn'", $client->getResponse()->getContent());

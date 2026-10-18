@@ -32,6 +32,7 @@ final class PreviewRenderer
         private readonly Environment $twig,
         #[Autowire(service: 'ux_toolkit.kit.kit_context_runner')]
         private readonly KitContextRunner $kitContextRunner,
+        private readonly PreviewVersion $previewVersion,
         #[Autowire(service: 'profiler')]
         private readonly ?Profiler $profiler = null,
     ) {
@@ -78,7 +79,16 @@ final class PreviewRenderer
         );
 
         $response = new Response($html, headers: ['Link' => \sprintf('<%s>; rel="canonical"', $canonicalUrl)]);
-        $response->setPublic()->setMaxAge(86400)->setEtag(hash('xxh128', $html));
+        $response->setPublic()->setEtag(hash('xxh128', $html));
+
+        if ($this->previewVersion->isRequested($request)) {
+            $response->setMaxAge(31536000)->setSharedMaxAge(31536000)->setImmutable();
+        } else {
+            // Another build, or no build at all: it may differ from what is deployed now.
+            $response->setMaxAge(0);
+            $response->headers->addCacheControlDirective('must-revalidate');
+        }
+
         $response->isNotModified($request);
 
         return $response;
