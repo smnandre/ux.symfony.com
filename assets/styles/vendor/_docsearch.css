@@ -37,6 +37,16 @@
         --docsearch-modal-shadow: 0 0 0 1px var(--color-border-translucent), 0 24px 48px -12px rgb(0 0 0 / .6);
     }
 
+    /* DocSearch locks scrolling on <body>: keep the scrollbar's room, and keep the modal out of it */
+    html:has(> body.DocSearch--active) {
+        scrollbar-gutter: stable;
+    }
+
+    .DocSearch-Container {
+        width: auto;
+        inset-inline-end: 0;
+    }
+
     .DocSearch-Hit mark {
         color: inherit;
         text-decoration: underline color-mix(in srgb, var(--search-accent) 55%, transparent) .12em;
